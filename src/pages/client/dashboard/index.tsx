@@ -1251,7 +1251,7 @@ function setCharAt(str,index,chr) {
         >
           <div className='modal-data'>
             <div className='history-modal'>
-              <h4>book a new session</h4>
+              <h4>book a new sessions</h4>
             </div>
 
             <div className='reschedule-zone'>
