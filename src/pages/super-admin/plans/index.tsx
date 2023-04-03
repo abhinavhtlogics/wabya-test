@@ -97,13 +97,6 @@ const AddPlan = () => {
     })
   }
 
-  // function validation() {
-  //   var plan_name = document.querySelector("#plan_name").value;
-  //   if ( plan_name== "")
-  //     toast.warn('Name can\'t be empty!')
-  //   }
-
-
   return (
     <section className="client-password coaches-list">
       <div className="container">

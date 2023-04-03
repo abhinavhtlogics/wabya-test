@@ -1,18 +1,17 @@
 import Link from 'next/link'
-import { app } from '../../../../../firebaseConfig'
 import { useRouter } from 'next/router'
-import { getAuth } from 'firebase/auth'
-
-// import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import { database } from '../../../../../firebaseConfig'
+import { collection, getDoc, doc } from 'firebase/firestore'
 
 const Header = () => {
 
-    const auth = getAuth(app)
     const router = useRouter()
     const { asPath, pathname } = useRouter();
 
-    // alert(pathname)
+    const [coach, setCoach] = useState(null);
+    const [coachId,setCoachId]=useState();
+
 
     const logout = () => {
       sessionStorage.removeItem('coachId');
@@ -23,6 +22,29 @@ const Header = () => {
       sessionStorage.removeItem('userId');
       router.push('/client/login')
     }
+
+    useEffect(() => {
+
+      const coachId = sessionStorage.getItem('coachId')
+      const userId = sessionStorage.getItem('userId')
+
+      setCoachId(coachId);
+
+      if (coachId) {
+        const fetchCoach = async () => {
+          const coachRef = doc(collection(database, "coaches_user"), coachId);
+          const coachDoc = await getDoc(coachRef);
+
+          if (coachDoc.exists()) {
+            setCoach(coachDoc.data());
+          } else {
+            console.log("No coach found");
+          }
+        };
+        fetchCoach();
+      }
+
+  }, [coachId])
 
 
   return (
@@ -102,7 +124,12 @@ const Header = () => {
                           data-bs-toggle='dropdown'
                           aria-expanded='false'
                         >
-                        Name Surname
+                        {
+                          coach ?
+                          (
+                              <>{coach.coach_name}</>
+                          ) : null
+                        }
                         </button>
                         <ul className='dropdown-menu'>
                           <li>

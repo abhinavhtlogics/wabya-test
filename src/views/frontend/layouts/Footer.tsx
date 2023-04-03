@@ -12,22 +12,19 @@ const Footer = () => {
               <div className='row'>
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>Home</h4>
+                    <h4>home</h4>
                   </div>
                 </div>
 
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>About</h4>
+                    <h4>about us</h4>
                     <ul>
                       <li>
-                        <Link href='#'>Meet our community</Link>
+                        <Link href='#'>meet the team</Link>
                       </li>
                       <li>
-                        <Link href='#'>Mission & Vision</Link>
-                      </li>
-                      <li>
-                        <Link href='#'>Our Founders</Link>
+                        <Link href='#'>mission & vision</Link>
                       </li>
                     </ul>
                   </div>
@@ -35,13 +32,13 @@ const Footer = () => {
 
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>Coaching Journey</h4>
+                    <h4>about coaching</h4>
                     <ul>
                       <li>
-                        <Link href='#'>This is coaching</Link>
+                        <Link href='#'>this is coaching</Link>
                       </li>
                       <li>
-                        <Link href='#'>The coaching journey</Link>
+                        <Link href='#'>the coaching journey</Link>
                       </li>
                     </ul>
                   </div>
@@ -49,10 +46,10 @@ const Footer = () => {
 
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>Pricing</h4>
+                    <h4>pricing</h4>
                     <ul>
                       <li>
-                        <Link href='#'>Pricing Options</Link>
+                        <Link href='#'>pricing options</Link>
                       </li>
                     </ul>
                   </div>
@@ -63,10 +60,10 @@ const Footer = () => {
                     <h4>FAQ</h4>
                     <ul>
                       <li>
-                        <Link href='#'>Privacy Policy</Link>
+                        <Link href='#'>privacy policy</Link>
                       </li>
                       <li>
-                        <Link href='#'>Terms & Conditions</Link>
+                        <Link href='#'>terms & conditions</Link>
                       </li>
                     </ul>
                   </div>
@@ -74,10 +71,10 @@ const Footer = () => {
 
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>Contact</h4>
+                    <h4>contact</h4>
                     <ul>
                       <li>
-                        <Link href='/contact'>Contact us</Link>
+                        <Link href='/contact'>contact us</Link>
                       </li>
                     </ul>
                   </div>
@@ -90,8 +87,8 @@ const Footer = () => {
                 <div className='col-sm-6'>
                   <div className='wg-1'>
                     <div className='coach-btn'>
-                      <Link href='#'>
-                        <a className='btn'>Coach with us</a>
+                      <Link href='/coach-with-us'>
+                        <a className='btn'>coach with us</a>
                       </Link>
                     </div>
                   </div>

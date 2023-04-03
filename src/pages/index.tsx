@@ -29,7 +29,7 @@ const Home = () => {
               <p>The truth is that you are the only expert on yourself in the whole, wide world.</p>
               <p>Coaching leverages this fact to help you move towards that ideal state - whatever it may be.</p>
               <p>So don’t delay: start exploring what matters to you by booking your free discovery session today.</p>
-              <p><Link href="#"><a className="btn">book a free coaching session</a></Link></p>
+              <p><Link href="/coaching-session"><a className="btn">book a free coaching session</a></Link></p>
             </div>
           </div>
             </div>
@@ -56,7 +56,7 @@ const Home = () => {
               <h2>3. realise your goals</h2>
               <p>You're free to decide if you would like to continue your coaching journey
               or not. If you do, you'll be that much closer to realising your goals.</p>
-             
+
             </div>
           </div> {/* <!--/ col-sm --> */}
 
@@ -74,7 +74,7 @@ const Home = () => {
               <p>We know what it's like to feel there has to be something more to life than sleep, eat,  work, repeat. We've been there.</p>
               <p>And we believe everyone should have the opportunity to realise their goals and find fulfilment.</p>
 
-              <p><Link href="#"><a className="btn">book a free coaching session</a></Link></p>
+              <p><Link href="/coaching-session"><a className="btn">book a free coaching session</a></Link></p>
 
             </div>
           </div> {/* <!--/ col-sm --> */}

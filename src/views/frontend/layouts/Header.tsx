@@ -23,7 +23,7 @@ const Header = () => {
 			  <li className={router.pathname == "/coaching-journey" ? "coaching-active" : ""}><Link href="/coaching-journey"><a>about coaching</a></Link></li>
 			  <li className={router.pathname == "/pricing" ? "pricing-active" : ""}><Link href="/pricing"><a>pricing</a></Link></li>
 			  <li className={router.pathname == "/faq" ? "pricing-active" : ""}><Link href="/faq"><a>FAQ</a></Link></li>
-			  <li className={router.pathname == "/contact" ? "active" : ""}><Link className="scroll" href="/contact">contact</Link></li>
+			  <li className={router.pathname == "/contact" ? "contact-active" : ""}><Link className="scroll" href="/contact">contact</Link></li>
 		    </ul>
 		  </div>
 

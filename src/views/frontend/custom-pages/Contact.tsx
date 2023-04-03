@@ -24,7 +24,7 @@ const Contact = () => {
     })
       .then(() => {
         alert('Contact details added successfully.')
-        
+
         // getData()
         setName('')
         setEmail('')
@@ -44,10 +44,11 @@ const Contact = () => {
           <div className="row align-items-center">
 
           <div className="col-sm-6 left">
-            <h2><span>Contact Us</span>How can we help you?</h2>
-          <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet Duis autem vel eum iriure dolor in hendrerit velit esse.</p>
-          <p>Want to join wabya as a coach?</p>
-          <p><Link href="#"><a className="btn">Click here</a></Link></p>
+            <h2>
+              {/* <span>Contact Us</span> */}
+              how can we help?</h2>
+              <p>Leave us your contact info and a short message with your query - we’ll get back to you asap! </p>
+
           </div> {/* <!--/ col-sm --> */}
 
           <div className="col-sm-6 right">
@@ -55,8 +56,15 @@ const Contact = () => {
             <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
               <div className="form-group"><input className="form-control" placeholder="Name" type="text" name="contactName" onChange={event => setName(event.target.value)} value={ contactName } /></div>
               <div className="form-group"><input className="form-control" placeholder="Email" type="email" name="contactEmail" onChange={event => setEmail(event.target.value)} value={ contactEmail } /></div>
+              <div className="form-group left">
+                <small><strong>I’m a</strong></small>
+
+                <span><input type="radio" name="contactChoose" id="choose_type" /> coach</span>
+                <span><input type="radio" name="contactChoose" id="choose_type" /> client</span>
+                <span><input type="radio" name="contactChoose" id="choose_type" /> curious visitor</span>
+              </div>
               <div className="form-group"><textarea className="form-control" placeholder="Message" name="contactMessage" onChange={event => setMessage(event.target.value)}>{contactMessage}</textarea></div>
-            <div className="form-group"><input className="btn" value="Send" type="submit" onClick={addData}/></div>
+            <div className="form-group" style={{ textAlign: 'left'}}><button className="btn" type="submit" onClick={addData}>send</button></div>
             </form>
             </div>
           </div> {/* <!--/ col-sm --> */}

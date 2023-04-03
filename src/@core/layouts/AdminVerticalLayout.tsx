@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Fab from '@mui/material/Fab'
@@ -53,6 +53,7 @@ const AdminVerticalLayout = (props: LayoutProps) => {
 
   // ** States
   const [navVisible, setNavVisible] = useState<boolean>(false)
+  const [adminId,setAdminId]=useState();
 
   // ** Toggle Functions
   const toggleNavVisibility = () => setNavVisible(!navVisible)
@@ -60,9 +61,20 @@ const AdminVerticalLayout = (props: LayoutProps) => {
   const router = useRouter();
 
   const logout = () => {
-    // sessionStorage.removeItem('Token')
+    sessionStorage.removeItem('adminId')
     router.push('/super-admin/login')
   }
+
+  useEffect(() => {
+
+    const adminId = sessionStorage.getItem('adminId')
+    setAdminId(adminId);
+
+    if (!adminId) {
+      router.push('/super-admin/login')
+    }
+
+}, [adminId])
 
   return (
     <>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useEffect,useState } from 'react'
 
 import { useRouter } from 'next/router'
-import { app,database } from '../../../firebaseConfig'
+import { app,database } from '../../../../firebaseConfig'
 import {
   collection,
   getDocs,
@@ -14,43 +14,57 @@ import {
 } from "firebase/firestore";
 
 
-const ClientsBasic = () => {
+const ViewBasic = () => {
 
   const router = useRouter()
-  const clientRef = collection(database, "client_user");
-  const [client, setClient] = useState(null);
-
-  useEffect(() => {
-    const token = sessionStorage.getItem('coachId')
-console.log('abc');
+  const [client_id,setClientId] = useState(router.query.client_id);
 
 
-    if(!token){
-        router.push('/pages/login')
-    }else{
-      getClients();
-      console.log(client);
-    }
-}, [])
+  const [meeting,setMeeting] = useState([]);
 
-useEffect(() => {
-
-    console.log(client);
-
-}, [client])
+  // Load the items for the current page
 
 
-const getClients = async () => {
-  const queryDoc = query(clientRef, where("assign_coach_id", "==",  sessionStorage.getItem('coachId')));
+  const meetingRef = collection(database, 'meeting');
+  const getMeeting = async () => {
+
+    // const adminId = sessionStorage.getItem("adminId");
+
+    const queryDoc = query(meetingRef, where("clientId", "==", client_id));
 
     await getDocs(queryDoc).then((response) => {
-      setClient(
+      setMeeting(
         response.docs.map((data) => {
-          return { ...data.data(), client_id: data.id };
+          return { ...data.data(), meeting_id: data.id };
         })
       );
     });
-}
+  };
+
+  useEffect(() => {
+    if (client_id) {
+      console.log(client_id);
+      getMeeting();
+    }
+  }, [client_id]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('adminId')
+
+    if(!token){
+        router.push('/super-admin/login')
+    }
+
+    if(token){
+      getMeeting()
+    }
+
+}, [])
+
+
+
+
+
 
   return (
     <section className='clients-listing'>
@@ -66,7 +80,7 @@ const getClients = async () => {
                     data-bs-toggle='dropdown'
                     aria-expanded='false'
                   >
-                    Filter Clients
+                    Filter Coach
                   </button>
                   <ul className='dropdown-menu'>
                     <div className='form-check'>
@@ -94,40 +108,29 @@ const getClients = async () => {
               </div>
             </div>
           </div>
-          </div>
-          <div className='row'>
-          {!client ? null :client.map((cl, index) => {
-                      return (
 
-          <div className='col-sm-3 cl-coll'>
-            <Link href={`${router.basePath}/clientDetail/${cl.client_id}`} passHref>
-              <div className='info'>
-                <figure>
-                  <img src='../images/clients-01.png' alt='' />
-                </figure>
-                <h3>
-                  {cl.client_name} <span>Private</span>
-                </h3>
-                <p>
-                  <span>Next Session</span>
-                </p>
-                <p>Thursday</p>
-                <p>10 November 2023</p>
-                <p>09:30</p>
-              </div>
-            </Link>
-          </div>
-
-           );
-          })}
-           </div>
-          {/* <!--/ cl-coll --> */}
+          { meeting.map((data) => {
+            return (
+                <>
+                  <div className='col-sm-3 cl-coll'>
+                    <div className='info'>
+                      <figure> <img src='../../../images/clients-01.png' alt='' /> </figure>
+                      <h3> { data.coach_name } <span>Private</span> </h3>
+                      <p> <span>Next Session</span> </p>
+                      <p>{ new Date(data.meetingDate).toLocaleDateString("en-US", { weekday: 'long' }) }</p>
+                      <p>{ new Date(data.meetingDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }) }</p>
+                      <p>{ data.meetingTime }</p>
+                    </div>
+                  </div>
+                </>
+              );
+            })}
 
         </div>
         {/* <!--/ row --> */}
-
-    </section> // client-listing
+      </div>
+    </section> // view-client-listing via coach
   )
 }
 
-export default ClientsBasic
+export default ViewBasic

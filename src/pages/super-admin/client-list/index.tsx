@@ -85,17 +85,16 @@ const ClientList = ()  => {
                         <td>{data.client_name}</td>
                         <td>{data.client_email}</td>
                         <td>
-                          {/* <Link href='/super-admin/client-list/edit/{`data.client_id`}' passHref>
+                          <Link href={`/super-admin/view-coach/${data.client_id}`} passHref>
                             <a className='btn btn-edit'>
-
                               <i className='fa fa-eye'></i>
                             </a>
-                          </Link> */}
+                          </Link>
 
-                            <button className='btn btn-delete' onClick={() => deleteDocument(data.client_id)}>
                               <ToastContainer/>
+                            {/* <button className='btn btn-delete' onClick={() => deleteDocument(data.client_id)}>
                               <i className='fa fa-trash'></i>
-                            </button>
+                            </button> */}
 
                         </td>
                       </tr>

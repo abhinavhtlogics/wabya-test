@@ -5,10 +5,11 @@ import { ReactNode, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { app, database } from '../../../../firebaseConfig'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { collection, getDocs, doc } from 'firebase/firestore';
+import { collection, getDocs, doc, query, where } from 'firebase/firestore';
 
 
 // ** MUI Components
+import { Alert } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -28,6 +29,10 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import Image from 'next/image'
 
+// material ui icons
+import EyeOutline from 'mdi-material-ui/EyeOutline'
+import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
+
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
@@ -36,33 +41,42 @@ const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
 
 const AdminLoginPage = () => {
 
-    const auth = getAuth(app)
-    const router = useRouter()
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+  const router = useRouter()
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [visible, setVisible] = useState<boolean>(false);
 
-  //   const login = () => {
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
-  //     signInWithEmailAndPassword(auth, username, password)
-  //         .then((response) => {
-  //             console.log(response.user)
-  //             sessionStorage.setItem('Token', response.user.accessToken);
-  //             alert('You can now login.')
-  //             router.push('/super-admin/dashboard')
-  //         })
-  //         .catch(err => {
-  //             alert('Credentials are invalid. Please try again later.')
-  //         });
-  // }
+    try {
+      // Check if the user exists in the database
+      const usersRef = collection(database, 'admin_user');
+      const q = query(usersRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
 
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem('Token')
+      if (querySnapshot.empty) {
+        throw new Error('Credentials are invalid!');
+      }
 
-  //   if(token){
-  //       router.push('/super-admin/login')
-  //   }
-  // }, [])
+      // Check if the password is correct
+      const user = querySnapshot.docs[0].data();
+      if (user.password !== password) {
+        throw new Error('Incorrect password');
+      }
+
+      // Set the user ID as a session variable
+        sessionStorage.setItem('adminId', querySnapshot.docs[0].id);
+
+      // Redirect to the home page
+        router.push('/super-admin/dashboard');
+
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   return (
 
@@ -79,9 +93,19 @@ const AdminLoginPage = () => {
             </Typography>
             <Typography variant='body2'>Please sign-in to your account </Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='username' label='Username' sx={{ marginBottom: 4 }}  type='text'  onChange={(event) => setUsername(event.target.value)} value={username} />
-            <TextField autoFocus fullWidth id='password' label='Password' sx={{ marginBottom: 4 }}  type='password'  onChange={(event) => setPassword(event.target.value)} value={password} />
+
+          {error && <Alert severity='error' style={{ margin :'0 0 20px 0'}}>{error}</Alert>}
+
+          <form noValidate autoComplete='off' onSubmit={handleLogin}>
+            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }}  type='email'  onChange={(event) => setEmail(event.target.value)} value={email} />
+            <TextField autoFocus fullWidth id='password' label='Password' sx={{ marginBottom: 4 }}  type={visible ? 'text' : 'password'} className='text-pass' onChange={(event) => setPassword(event.target.value)} value={password} />
+            <span className="pass-eye" onClick={()=>setVisible(!visible)}>
+            {
+              visible ?
+              <EyeOutline fontSize='small' /> :
+              <EyeOffOutline fontSize='small' />
+            }
+            </span>
 
             <Box
               sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
@@ -91,9 +115,8 @@ const AdminLoginPage = () => {
             <Button
               fullWidth
               size='large'
-              variant='contained'
-              sx={{ marginBottom: 7, fontWeight:600 }}
-              onClick={ () => router.push('/super-admin/dashboard')} >
+              variant='contained' type='submit'
+              sx={{ marginBottom: 7, fontWeight:600 }} >
               Login
             </Button>
           </form>

@@ -147,7 +147,7 @@ const Pricing = () => {
             </div>
           </div>
 
-          {
+            {
             isThankModal ?
               (
                 <>

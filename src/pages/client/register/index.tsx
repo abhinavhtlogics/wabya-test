@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 // import Firebase database
 import { database } from '../../../../firebaseConfig'
-import { collection, addDoc ,where, query,getDocs } from 'firebase/firestore'
+import { collection, addDoc ,where, query,startAt,limit,orderBy,getDocs} from 'firebase/firestore'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -107,6 +107,9 @@ const RegisterPage = () => {
             client_api : String(),
             client_uname : String(), 
             client_uid : Number(),
+            assign_coach_id:coachData[randomNo].coach_id,
+            assign_coach_api:coachData[randomNo].coach_api,
+            assign_coach_uname:coachData[randomNo].coach_uname,
           })
             .then(() => {
               toast.success('Client registered successfully')
@@ -129,7 +132,9 @@ console.log(
 const clientRef = collection(database, 'client_user');
 
 const coachRef = collection(database, 'coaches_user');
-const [coachData, setCoachData] = useState([])
+const [coachData, setCoachData] = useState([]);
+
+const [randomNo, setrandomNo] = useState(0);
 
   // coach data fetch
   const getCoachData = async () => {
@@ -159,7 +164,7 @@ console.log('test');
 
     console.log(coachData);
     
-    
+    setrandomNo(Math.floor(Math.random() * (2 - 0 + 1)) + 0);
 
 
   }, [coachData])
