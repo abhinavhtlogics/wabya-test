@@ -371,6 +371,7 @@ for (let index = 0; index < data.data.length; index++) {
     let original_date=tomonth+'/'+todate+'/'+toyear; console.log(original_date);
     let start_time=new Date(data.data[index].start_time * 1000).toLocaleTimeString();
       session.push({date:original_date,start_time:start_time,duration:data.data[index].duration,coach_name:meeting[index2].coach_name})
+      break;
     }
 
   }
