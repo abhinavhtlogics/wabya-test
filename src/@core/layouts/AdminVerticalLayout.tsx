@@ -87,13 +87,13 @@ const AdminVerticalLayout = (props: LayoutProps) => {
                 <div className='container-fluid'>
                   <Link href='/super-admin/dashboard' passHref>
                     <a className='navbar-brand'>
-                      <img src='../../images/admin.png' alt='Long Island Tub Refinishing Logo' />
+                      <img src={`${router.basePath}/images/admin.png`} alt='Long Island Tub Refinishing Logo' />
                     </a>
                   </Link>
 
                   <div className='profile-button'>
                     <figure>
-                      <img src='../../images/user-image.png' alt='' />
+                      <img src={`${router.basePath}/images/user-image.png`} alt='' />
                     </figure>
 
                     <div className='dropdown'>

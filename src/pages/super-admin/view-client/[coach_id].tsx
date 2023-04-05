@@ -19,22 +19,6 @@ const ViewBasic = () => {
   const router = useRouter()
   const [meeting,setMeeting] = useState([]);
 
-
-  // const coachId = router.query.coach_id;
-  // const getMeeting = async () => {
-
-  //   const meetingRef = collection(database, 'meeting');
-  //   const queryDoc = query(meetingRef, where("coachId", "==", coachId));
-
-  //   await getDocs(queryDoc).then((response) => {
-  //     setMeeting(
-  //       response.docs.map((data) => {
-  //         return { ...data.data(), meeting_id: data.id };
-  //       })
-  //     );
-  //   });
-  // };
-
   useEffect(() => {
     const fetchCoaches = async () => {
       try {
