@@ -13,7 +13,7 @@ const TimesheetBasic = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('Token')
+    const token = sessionStorage.getItem('coachId')
 
     if(!token){
         router.push('/pages/login')
