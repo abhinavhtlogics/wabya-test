@@ -84,7 +84,7 @@ const Home = () => {
               <p>We know what it's like to feel there has to be something more to life than sleep, eat,  work, repeat. We've been there.</p>
               <p>And we believe everyone should have the opportunity to realise their goals and find fulfilment.</p>
 
-              <p><Link href="/pages/login"><a className="btn">book a free coaching session</a></Link></p>
+              <p><Link href="/coaching-session"><a className="btn">book a free coaching session</a></Link></p>
 
             </div>
           </div> {/* <!--/ col-sm --> */}
