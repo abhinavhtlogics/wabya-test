@@ -1618,7 +1618,7 @@ footer.layout-footer p { color: #ece6d3; }
 .front-pricing .pr-modal span{color: #ba5327; font-size: 20px; font-weight: 700; line-height: 40px; letter-spacing: 1px;
 }
 .front-pricing .pr-modal div:first-child{display: inline-block; width: 0%;}
-.front-pricing .pr-modal div:last-child{display: inline-block; width: 100%; text-align: center;}
+.front-pricing .pr-modal div:last-child{display: inline-block; width: 100%; text-align: right;}
 .front-pricing .pr-modal {
   margin-bottom: 20px;
   display: grid;
