@@ -258,6 +258,10 @@ h4{color:#f79632;}
   .client-speak .owl-theme .owl-nav button.owl-next{right:-27px; left:inherit;}
   .client-speak .owl-theme .owl-nav button.owl-prev:before{background-image: url(../images/arrow-left.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center center; background-size: cover; color: #000; content: ""; left: 0; position: absolute; top: 0; width: 100%; height: 100%;}
   .client-speak .owl-theme .owl-nav button.owl-next:before{background-image: url(../images/arrow-right.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center center; background-size: cover; color: #000; content: ""; left: 0; position: absolute; top: 0; width: 100%; height: 100%;}
+  .client-speak .owl-theme .owl-nav div{display: block; background:none !important; -webkit-border-radius:0; -moz-border-radius:0; border-radius:0; color:#000; position:absolute; left:-27px; top:0; margin:0; height:30px; width:30px; opacity:1; text-indent:-99999px;}
+  .client-speak .owl-theme .owl-nav div.owl-next{right:-27px; left:inherit;}
+  .client-speak .owl-theme .owl-nav div.owl-prev:before{background-image: url(../images/arrow-left.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center center; background-size: cover; color: #000; content: ""; left: 0; position: absolute; top: 0; width: 100%; height: 100%;}
+  .client-speak .owl-theme .owl-nav div.owl-next:before{background-image: url(../images/arrow-right.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center center; background-size: cover; color: #000; content: ""; left: 0; position: absolute; top: 0; width: 100%; height: 100%;}
 
 /* about section - meet up team */
 .meet-team{overflow:hidden; position:relative; text-align:center; margin:0; padding:75px 0 20px; z-index:1;}
