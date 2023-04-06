@@ -1621,7 +1621,12 @@ footer.layout-footer p { color: #ece6d3; }
 .front-pricing .pr-modal div:last-child{display: inline-block; width: 100%; text-align: center;}
 .front-pricing .pr-modal {
   margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
+.front-pricing .pr-modal .pro{text-align: center;}
+.front-pricing .pr-modal .fa-close{font-size: 28px;}
+
 .front-pricing .divider {
   border-bottom: 1px solid #0f2450;
   width: 50%;

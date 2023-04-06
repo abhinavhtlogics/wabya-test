@@ -12,6 +12,14 @@ const Pricing = () => {
   const showModal = () => {
     setIsModalVisible(true)
   }
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const thankModal = () => {
     setIsModalVisible(false)
     setIsThankModal(true)
@@ -51,7 +59,8 @@ const Pricing = () => {
                   <div className="front-pricing">
                     <div className="pr-modal">
                       <div><i className="fa fa-angle-left"></i></div>
-                      <div><span>PROBONO COACHING</span></div>
+                      <div className="pro"><span>PROBONO COACHING</span></div>
+                      <div onClick={handleCancel}><i className="fa fa-close"></i></div>
                     </div>
                     <div className="divider"></div>
                     <div className="para-modal">
