@@ -20,40 +20,35 @@ import { ConsoleNetworkOutline } from 'mdi-material-ui';
 const ClientDetail = () => {
 
   const router = useRouter()
-  const [idd,setIdd] = useState(router.query.id);
+ // const [idd,setIdd] = useState(router.query.id);
 
   //setIdd(""+router.query+"");
 
   //const clientRef = collection(database, "client_user")
-  const itemRef = doc(collection(database, "client_user"), idd);
+ // const itemRef = doc(collection(database, "client_user"), idd);
 
   const [CDetail, setCDetail] = useState([]);
 
    // get all meeting data
-   const getClientDetail = async () => {
-    //const userId = sessionStorage.getItem("userId");
-console.log('testing');
-
-    // queryDoc = query(clientRef, where("client_id", "==", id));
-
-
-
+  
+  
+  useEffect(() => {
+    const getClientDetail = async () => {
+      try {
+        if (router.query.id !== undefined) { // check if coach_id is defined
+          const itemRef = doc(collection(database, "client_user"), router.query.id);
     await getDoc(itemRef).then((response) => {
       setCDetail(response.data());
       console.log(response.data());
     });
   };
-
-
-  useEffect(() => {
-    if (idd) {
-      console.log(idd);
-
-      getClientDetail();
-
-
-    }
-  }, [idd]);
+      }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+  }, [router.query.id]);
 
   useEffect(() => {
     console.log(CDetail);
