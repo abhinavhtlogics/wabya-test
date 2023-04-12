@@ -17,7 +17,7 @@ const ResourceBasic = () => {
     const token = sessionStorage.getItem('Token')
 
     if(!token){
-        router.push('/pages/login')
+       // router.push('/pages/login')
     }
 }, [])
 
