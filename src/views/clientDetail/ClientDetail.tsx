@@ -32,7 +32,7 @@ const ClientDetail = () => {
    // get all meeting data
   
   
-  useEffect(() => {
+ useEffect(() => {
     const getClientDetail = async () => {
       try {
         if (router.query.id !== undefined) { // check if coach_id is defined
@@ -41,15 +41,16 @@ const ClientDetail = () => {
       setCDetail(response.data());
       console.log(response.data());
     });
-  };
+  }
       }
-      } catch (error) {
+       catch (error) {
         console.log(error);
       }
    
-    
+    };
   }, [router.query.id]);
-
+  
+  
   useEffect(() => {
     console.log(CDetail);
   }, [CDetail]);
