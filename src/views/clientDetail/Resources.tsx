@@ -11,7 +11,7 @@ const Resources = () => {
         <div className="row">
 
         <div className="col-sm-2 left mrb-30">
-          <figure><img src="../images/user-image.png" alt=""/></figure>
+          <figure><img src="https://firebasestorage.googleapis.com/v0/b/wabya-45dba.appspot.com/o/coach%2Fprofile%2Fimageedit_3_6972167678.png?alt=media&token=ffa76d84-d5ee-4f68-ba0c-c7046499cf84" alt=""/></figure>
         </div> {/* <!--/ left --> */}
 
         <div className="col-sm-10 right mrb-30">
