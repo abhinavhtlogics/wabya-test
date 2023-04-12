@@ -58,7 +58,7 @@ console.log('testing');
   useEffect(() => {
     console.log(CDetail);
   }, [CDetail]);
-  
+
   return (
 
     <section className="client-profile">
