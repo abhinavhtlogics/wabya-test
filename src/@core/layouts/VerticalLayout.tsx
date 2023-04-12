@@ -160,57 +160,67 @@ const VerticalLayout = (props: LayoutProps) => {
           ):
           (
             <>
-              {
-                calApi ?
-                (
-                  <MainContentWrapper className='layout-content-wrapper'>
+              <MainContentWrapper className='layout-content-wrapper'>
 
-                    <ContentWrapper className='layout-page-content' >
-                      {children}
-                    </ContentWrapper>
+                <ContentWrapper className='layout-page-content' >
+                  {children}
+                </ContentWrapper>
 
-                  </MainContentWrapper>
-                ):
-                (
-                  (
-                    <>
-                      <section className="follow-instructions">
-                        <div className="container">
-                          <div className="row">
-                            <div className="col-sm-12">
-                            <h3><span>You haven't added your Cal API Key and Cal Username. Visit <Link href='https://app.cal.com/auth/login' passHref><a className='cal' target='_blank'>cal.com</a></Link></span> Instructions </h3>
-
-                            </div>
-                            <div className="col-sm-12">
-                              <form noValidate autoComplete='off' onSubmit={handleLogin} >
-                                <TextField autoFocus fullWidth id='cal_api' label='Cal API key' sx={{ marginBottom: 4 }}
-                                type='text'  onChange={(event) => setCalApiKey(event.target.value)} value={calApiKey}
-                                />
-                                {errorApi ? ( <p className='form-error'>*{errorApi}</p> ) : null}
-                                <TextField autoFocus  fullWidth id='cal_uname' label='Cal Username' sx={{ marginBottom: 4 }}  type='text' onChange={(event) => setCalUsername(event.target.value)} value={calUsername} />
-                                {errorUname ? ( <p className='form-error'>*{errorUname}</p> ) : null}
-
-                              <Button
-                              type='submit'
-                                fullWidth
-                                size='large'
-                                variant='contained'
-                                sx={{ margin: "20px 0", fontWeight:600 }}
-                              >
-                                Update
-                              </Button>
-
-                              </form>
-                            </div>
-
-                          </div>
-                        </div>
-                      </section>
-                    </>
-                  )
-                )
-              }
+              </MainContentWrapper>
             </>
+            
+            // <>
+            //   {
+            //     calApi ?
+            //     (
+            //       <MainContentWrapper className='layout-content-wrapper'>
+
+            //         <ContentWrapper className='layout-page-content' >
+            //           {children}
+            //         </ContentWrapper>
+
+            //       </MainContentWrapper>
+            //     ):
+            //     (
+            //       (
+            //         <>
+            //           <section className="follow-instructions">
+            //             <div className="container">
+            //               <div className="row">
+            //                 <div className="col-sm-12">
+            //                 <h3><span>You haven't added your Cal API Key and Cal Username. Visit <Link href='https://app.cal.com/auth/login' passHref><a className='cal' target='_blank'>cal.com</a></Link></span> Instructions </h3>
+
+            //                 </div>
+            //                 <div className="col-sm-12">
+            //                   <form noValidate autoComplete='off' onSubmit={handleLogin} >
+            //                     <TextField autoFocus fullWidth id='cal_api' label='Cal API key' sx={{ marginBottom: 4 }}
+            //                     type='text'  onChange={(event) => setCalApiKey(event.target.value)} value={calApiKey}
+            //                     />
+            //                     {errorApi ? ( <p className='form-error'>*{errorApi}</p> ) : null}
+            //                     <TextField autoFocus  fullWidth id='cal_uname' label='Cal Username' sx={{ marginBottom: 4 }}  type='text' onChange={(event) => setCalUsername(event.target.value)} value={calUsername} />
+            //                     {errorUname ? ( <p className='form-error'>*{errorUname}</p> ) : null}
+
+            //                   <Button
+            //                   type='submit'
+            //                     fullWidth
+            //                     size='large'
+            //                     variant='contained'
+            //                     sx={{ margin: "20px 0", fontWeight:600 }}
+            //                   >
+            //                     Update
+            //                   </Button>
+
+            //                   </form>
+            //                 </div>
+
+            //               </div>
+            //             </div>
+            //           </section>
+            //         </>
+            //       )
+            //     )
+            //   }
+            // </>
           )
         }
 

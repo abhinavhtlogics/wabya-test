@@ -106,6 +106,9 @@ const coachesRef = collection(database, 'coaches_user');
             coach_api : String(),
             coach_uname : String(),
             coach_language: String(),
+            coach_about: String(),
+            coach_bio: String(),
+            coach_profile: String(),
             coach_uid : Number(),
           })
             .then(() => {

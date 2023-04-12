@@ -18,7 +18,12 @@ import DatePicker from 'react-datepicker'
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
-
+// firebase config
+import { database, storage } from '../../../../firebaseConfig'
+import { collection, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { useFormik } from 'formik';
+import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { Alert } from 'antd'
 
 // ** React Imports
 import { SyntheticEvent, useState, useEffect, forwardRef } from 'react'
@@ -57,12 +62,14 @@ const CustomInput = forwardRef((props, ref) => {
 const EditProfile = () => {
 
   const [proName, setName] = useState('');
+  const [proEmail, setEmail] = useState('');
   const [proPhone, setPhone] = useState('');
   const [proCountry, setCountry] = useState('');
   const [proLanguage, setLanguage] = useState('');
   const [proTimeZone, setTimeZone] = useState('');
   const [proBio, setBio] = useState('');
   const [proAbout, setAbout] = useState('');
+  const [proImage,setImage] = useState('');
 
   // ** State
   const [value, setValue] = useState<string>('account')
@@ -78,38 +85,164 @@ const EditProfile = () => {
     const { files } = file.target as HTMLInputElement
     if (files && files.length !== 0) {
       reader.onload = () => setImgSrc(reader.result as string)
-
-      reader.readAsDataURL(files[0])
+      reader.readAsDataURL(files[0]);
+      console.log(files)
     }
   }
+
+  // edit profile super-admin
+  const [message, setMessage] = useState(false);
+
+  useEffect(() => {
+
+    const editAdmin = async () => {
+
+      const adminIds = sessionStorage.getItem('adminId');
+      const userCollection = collection(database, 'admin_user');
+      const userDocRef = doc(userCollection, adminIds);
+      const userDoc = await getDoc(userDocRef);
+
+      setName(userDoc.data().name),
+      setEmail(userDoc.data().email),
+      setPhone(userDoc.data().phone),
+      setCountry(userDoc.data().country),
+      setLanguage(userDoc.data().languages),
+      setTimeZone(userDoc.data().timezone),
+      setBio(userDoc.data().bio),
+      setAbout(userDoc.data().about)
+      setImage(userDoc.data().profile)
+    };
+    editAdmin();
+
+  }, []);
+
+
+  const handleSubmit = async () =>{
+
+    const adminIds = sessionStorage.getItem('adminId');
+    const userDocRef = doc(collection(database, 'admin_user'), adminIds);
+
+    const updatedData = {
+        name: proName,
+        phone : proPhone,
+        country : proCountry,
+        timezone : proTimeZone,
+        languages : proLanguage,
+        bio : proBio,
+        about : proAbout,
+        profile : fileUrl
+    };
+    await updateDoc(userDocRef, updatedData);
+    setMessage(true);
+
+    //reflect changes instant
+    const nameField = document.getElementById("pro_fullname");
+    const bioField = document.getElementById("pro_bio");
+    const aboutField = document.getElementById("pro_about");
+    const countryField = document.getElementById("pro_country");
+    const languageField = document.getElementById("pro_language");
+    const timezoneField = document.getElementById("pro_timezone");
+    const phoneField = document.getElementById("pro_phone");
+
+    nameField.value = updatedData.name;
+    bioField.value = updatedData.bio;
+    aboutField.value = updatedData.about;
+    countryField.value = updatedData.country;
+    languageField.value = updatedData.languages;
+    timezoneField.value = updatedData.timezone;
+    phoneField.value = updatedData.phone;
+  }
+
+  const handleClose = () => {
+    setMessage(false);
+  };
+
+  const [file, setFile] = useState(null);
+  const [fileUrl, setfileUrl] = useState("");
+  const MAX_FILE_SIZE = 800 * 1024;
+
+  function handleFileChange(event) {
+    const selectedFile = event.target.files[0];
+      const allowedTypes = ['image/jpeg', 'image/png'];
+
+      if (!allowedTypes.includes(selectedFile.type)) {
+        alert('Only JPEG and PNG files are allowed!');
+
+        return;
+      }
+      if (selectedFile && selectedFile.size > MAX_FILE_SIZE) {
+        alert("File size exceeds the limit of 800kb");
+
+        return;
+      }
+
+      setFile(selectedFile);
+  }
+
+  function profile(){
+    if (file != null) {
+
+      const storageRef = ref(storage, `/super-admin/profile/${file.name}`)
+      const uploadTask =  uploadBytesResumable(storageRef, file);
+      uploadTask.on("state_changed",
+        (snapshot) => {
+
+          console.log('snapshot');
+
+        },
+    (err) => console.log(err),
+        () => {
+    // download url
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        console.log(url);
+        setfileUrl(url);
+
+        // setFile(null);
+        console.log('File Uploaded!');
+    });
+    }
+    );
+
+  }
+  }
+
+  useEffect(() => {
+
+    console.log(file);
+    if(file != null){
+      profile();
+    }
+
+  }, [file]);
+
+
 
   return (
     <section className="edit-profile">
       <div className="container">
         <div className="row">
           <div className="col-sm-12">
-            <h2>add profile</h2>
+            <h2>edit profile</h2>
             <div className='inner-info'>
 
       <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
+            {file ? (<ImgStyled src={URL.createObjectURL(file)} alt='Profile Pic' />) : (<ImgStyled src={proImage} alt='Profile Pic' />)}
+
               <Box>
                 <ButtonStyled className='btn' component='label' variant='contained' htmlFor='account-settings-upload-image'>
                   Upload New Photo
                   <input name='pro_image'
                     hidden
                     type='file'
-                    onChange={onChange}
+                    onChange={handleFileChange}
                     accept='image/png, image/jpeg'
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                {/* <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
-                  Reset
-                </ResetButtonStyled> */}
+
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
                   Allowed PNG or JPEG. Max size of 800K.
                 </Typography>
@@ -118,53 +251,24 @@ const EditProfile = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField type='text' fullWidth label='Name' placeholder='Name' defaultValue={proName} onChange={event => setName(event.target.value)} name='pro_fullname' />
+            <TextField type='text' fullWidth label='Name' placeholder='Name' value={proName} onChange={event => setName(event.target.value)}  id='pro_fullname' name='pro_fullname' />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField type='text' fullWidth label='Email' placeholder='Email' value={proEmail} onChange={event => setEmail(event.target.value)} name='pro_email' id='pro_email' disabled />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth type='text' label='Phone' placeholder='Phone' name='pro_phone' id='pro_phone' value={proPhone} onChange={event => setPhone(event.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth type='text' label='Country' placeholder='Country' name='pro_country' id='pro_country' value={proCountry} onChange={event => setCountry(event.target.value)} />
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='text' label='Phone' placeholder='Phone' name='pro_phone' defaultValue={proPhone} onChange={event => setPhone(event.target.value)} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='text' label='Country' placeholder='Country' name='pro_country' defaultValue={proCountry} onChange={event => setCountry(event.target.value)} />
+            <TextField fullWidth type='text' label='Language' placeholder='Language' name='pro_language' id='pro_language' value={proLanguage} onChange={event => setLanguage(event.target.value)} />
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-multiple-select-label'>Languages</InputLabel>
-              <Select onChange={event => setCountry(event.target.value)}
-                multiple
-                defaultValue={['English']}
-                id='account-settings-multiple-select'
-                labelId='account-settings-multiple-select-label'
-                input={<OutlinedInput label='Languages' id='select-multiple-language' />}
-              >
-                <MenuItem value='English'>English</MenuItem>
-                <MenuItem value='French'>French</MenuItem>
-                <MenuItem value='Spanish'>Spanish</MenuItem>
-                <MenuItem value='Portuguese'>Portuguese</MenuItem>
-                <MenuItem value='Italian'>Italian</MenuItem>
-                <MenuItem value='German'>German</MenuItem>
-                <MenuItem value='Arabic'>Arabic</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-multiple-select-label'>Time Zone</InputLabel>
-              <Select
-                multiple onChange={event => setTimeZone(event.target.value)}
-                defaultValue={['India']}
-                id='account-settings-multiple-select'
-                labelId='account-settings-multiple-select-label'
-                input={<OutlinedInput label='Time Zone' id='select-multiple-language' />}
-              >
-                <MenuItem value='India'>India</MenuItem>
-                <MenuItem value='Europe'>Europe</MenuItem>
-                <MenuItem value='London'>London</MenuItem>
-                <MenuItem value='Spain'>Spain</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField fullWidth type='text' label='Time Zone' placeholder='Time Zone' name='pro_timezone' id='pro_timezone' value={proTimeZone} onChange={event => setTimeZone(event.target.value)} />
           </Grid>
 
           <Grid item xs={12}>
@@ -175,10 +279,11 @@ const EditProfile = () => {
               minRows={2}
               placeholder='Bio'
               name='pro_bio'
-              defaultValue= {proBio}
+              id='pro_bio'
+              value= {proBio}
               onChange={event => setBio(event.target.value)}
 
-              // defaultValue='The name’s John Deo. I am a tireless seeker of knowledge, occasional purveyor of wisdom and also, coincidentally, a graphic designer. Algolia helps businesses across industries quickly create relevant 😎, scalable 😀, and lightning 😍 fast search and discovery experiences.'
+              // value='The name’s John Deo. I am a tireless seeker of knowledge, occasional purveyor of wisdom and also, coincidentally, a graphic designer. Algolia helps businesses across industries quickly create relevant 😎, scalable 😀, and lightning 😍 fast search and discovery experiences.'
             />
           </Grid>
           <Grid item xs={12}>
@@ -188,7 +293,8 @@ const EditProfile = () => {
               label='About'
               minRows={2}
               placeholder='About'
-              defaultValue={proAbout}
+              value={proAbout}
+              id='pro_about'
               name='pro_about'
               onChange={event => setAbout(event.target.value)}
             />
@@ -196,12 +302,17 @@ const EditProfile = () => {
 
           <Grid item xs={12}>
 
-            <button type='submit' className="btn btn-save">
+            <button type='submit' className="btn btn-save" onClick={handleSubmit}>
               Save Changes
             </button>
-            <button type='reset' className="btn reset-btn">
+            {/* <button type='reset' className="btn reset-btn">
               Reset
-            </button>
+            </button> */}
+          </Grid>
+          <Grid item xs={12}>
+          {message ? (
+              <Alert message="Profile updated successfully" type="success" showIcon closable afterClose={handleClose} />
+          ) : null}
           </Grid>
         </Grid>
       </form>

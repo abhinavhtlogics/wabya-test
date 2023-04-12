@@ -1,9 +1,13 @@
 // ** React Imports
 import { useState, ElementType, ChangeEvent, forwardRef, useEffect } from 'react'
-import { app, database } from '../../../firebaseConfig'
 import { useRouter } from 'next/router'
-import { getAuth } from 'firebase/auth'
-import { collection, addDoc } from 'firebase/firestore';
+
+// firebase config
+import { database, storage } from '../../../firebaseConfig'
+import { collection, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { useFormik } from 'formik';
+import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { Alert } from 'antd'
 
 
 // ** MUI Imports
@@ -65,18 +69,6 @@ const CustomInput = forwardRef((props, ref) => {
 const TabAccount = () => {
 
     const router = useRouter()
-    const auth = getAuth(app);
-    const [proName, setName] = useState('');
-    const [proPhone, setPhone] = useState('');
-    const [proCountry, setCountry] = useState('');
-    const [proLanguage, setLanguage] = useState('');
-    const [proTimeZone, setTimeZone] = useState('');
-    const [proBio, setBio] = useState('');
-    const [proAbout, setAbout] = useState('');
-    const [apiKey, setApiKey] = useState('');
-    const [calUname, setCalUname] = useState('');
-
-    const databaseRef = collection(database, 'profile');
 
     useEffect(() => {
       const token = sessionStorage.getItem('coachId')
@@ -87,7 +79,7 @@ const TabAccount = () => {
     }, [])
 
   // ** State
-  
+
   const [imgSrc, setImgSrc] = useState<string>('/images/user-image.png')
   const [date, setDate] = useState<Date | null | undefined>(null)
 
@@ -101,36 +93,139 @@ const TabAccount = () => {
     }
   }
 
-  const addProfileData = () => {
-    addDoc(databaseRef, {
-      fullname: proName,
-      contact_number: Number(proPhone),
-      country : proCountry,
-      language : proLanguage,
-      time_zone : proTimeZone,
-      bio : proBio,
-      about: proAbout,
-      api : apiKey,
-      uname : calUname
-    })
-      .then(() => {
-        alert('Profile added successfully.')
+    // edit profile coach
+    const [proName, setName] = useState('');
+    const [proEmail, setEmail] = useState('');
+    const [proPhone, setPhone] = useState('');
+    const [proCountry, setCountry] = useState('');
+    const [proLanguage, setLanguage] = useState('');
+    const [proTimeZone, setTimeZone] = useState('');
+    const [proBio, setBio] = useState('');
+    const [proAbout, setAbout] = useState('');
+    const [proImage,setImage] = useState('');
+    const [message, setMessage] = useState(false);
 
-        setName('')
-        setPhone('')
-        setCountry('')
-        setLanguage('')
-        setTimeZone('')
-        setBio('')
-        setAbout('')
-        setApiKey('')
-        setCalUname('')
-        router.push('/dashboard')
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-  }
+    useEffect(() => {
+
+      const editAdmin = async () => {
+
+        const coachIds = sessionStorage.getItem('coachId');
+        const userCollection = collection(database, 'coaches_user');
+        const userDocRef = doc(userCollection, coachIds);
+        const userDoc = await getDoc(userDocRef);
+
+        setName(userDoc.data().coach_name),
+        setEmail(userDoc.data().coach_email),
+        setPhone(userDoc.data().coach_phone),
+        setCountry(userDoc.data().coach_country),
+        setLanguage(userDoc.data().coach_language),
+        setTimeZone(userDoc.data().coach_timezone),
+        setBio(userDoc.data().coach_bio),
+        setAbout(userDoc.data().coach_about)
+        setImage(userDoc.data().coach_profile)
+      };
+      editAdmin();
+
+    }, []);
+
+
+    const handleSubmit = async () =>{
+
+      const coachIds = sessionStorage.getItem('coachId');
+      const userDocRef = doc(collection(database, 'coaches_user'), coachIds);
+
+      const updatedData = {
+        coach_name: proName,
+        coach_phone : proPhone,
+        coach_country : proCountry,
+        coach_timezone : proTimeZone,
+        coach_language : proLanguage,
+        coach_bio : proBio,
+        coach_about : proAbout,
+        coach_profile : fileUrl
+      };
+      await updateDoc(userDocRef, updatedData);
+      setMessage(true);
+
+      //reflect changes instant
+      const nameField = document.getElementById("pro_fullname");
+      const bioField = document.getElementById("pro_bio");
+      const aboutField = document.getElementById("pro_about");
+      const countryField = document.getElementById("pro_country");
+      const languageField = document.getElementById("pro_language");
+      const timezoneField = document.getElementById("pro_timezone");
+      const phoneField = document.getElementById("pro_phone");
+
+      nameField.value = updatedData.coach_name;
+      bioField.value = updatedData.coach_bio;
+      aboutField.value = updatedData.coach_about;
+      countryField.value = updatedData.coach_country;
+      languageField.value = updatedData.coach_language;
+      timezoneField.value = updatedData.coach_timezone;
+      phoneField.value = updatedData.coach_phone;
+    }
+
+    const handleClose = () => {
+      setMessage(false);
+    };
+
+    const [file, setFile] = useState(null);
+    const [fileUrl, setfileUrl] = useState("");
+    const MAX_FILE_SIZE = 800 * 1024;
+
+    function handleFileChange(event) {
+
+      const selectedFile = event.target.files[0];
+      const allowedTypes = ['image/jpeg', 'image/png'];
+
+      if (!allowedTypes.includes(selectedFile.type)) {
+        alert('Only JPEG and PNG files are allowed!');
+
+        return;
+      }
+      if (selectedFile && selectedFile.size > MAX_FILE_SIZE) {
+        alert("File size exceeds the limit of 800kb");
+
+        return;
+      }
+
+      setFile(selectedFile);
+    }
+
+    function profile(){
+      if (file != null) {
+
+        const storageRef = ref(storage, `/coach/profile/${file.name}`)
+        const uploadTask =  uploadBytesResumable(storageRef, file);
+        uploadTask.on("state_changed",
+          (snapshot) => {
+
+            console.log('snapshot');
+
+          },
+      (err) => console.log(err),
+          () => {
+      // download url
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          console.log(url);
+          setfileUrl(url);
+          console.log('File Uploaded!');
+      });
+      }
+      );
+
+    }
+    }
+
+    useEffect(() => {
+
+      console.log(file);
+      if(file != null){
+        profile();
+      }
+
+    }, [file]);
+
 
   return (
     <div className='inner-info'>
@@ -139,21 +234,20 @@ const TabAccount = () => {
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
+            {file ? (<ImgStyled src={URL.createObjectURL(file)} alt='Profile Pic' />) : (<ImgStyled src={proImage} alt='Profile Pic' />)}
+
               <Box>
                 <ButtonStyled className='btn' component='label' variant='contained' htmlFor='account-settings-upload-image'>
                   Upload New Photo
                   <input name='pro_image'
                     hidden
                     type='file'
-                    onChange={onChange}
+                    onChange={handleFileChange}
                     accept='image/png, image/jpeg'
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                {/* <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
-                  Reset
-                </ResetButtonStyled> */}
+
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
                   Allowed PNG or JPEG. Max size of 800K.
                 </Typography>
@@ -162,62 +256,24 @@ const TabAccount = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField type='text' fullWidth label='Name' placeholder='Name' defaultValue={proName} onChange={event => setName(event.target.value)} name='pro_fullname' />
-          </Grid>
-          {/* <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              type='email'
-              label='Email'
-              placeholder='Email'
-              defaultValue='' name='pro_email'
-            />
-          </Grid> */}
-
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='text' label='Phone' placeholder='Phone' name='pro_phone' defaultValue={proPhone} onChange={event => setPhone(event.target.value)} />
+            <TextField type='text' fullWidth label='Name' placeholder='Name' value={proName} onChange={event => setName(event.target.value)}  id='pro_fullname' name='pro_fullname' />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth type='text' label='Country' placeholder='Country' name='pro_country' defaultValue={proCountry} onChange={event => setCountry(event.target.value)} />
+            <TextField type='text' fullWidth label='Email' placeholder='Email' value={proEmail} onChange={event => setEmail(event.target.value)} name='pro_email' id='pro_email' disabled />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth type='text' label='Phone' placeholder='Phone' name='pro_phone' id='pro_phone' value={proPhone} onChange={event => setPhone(event.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth type='text' label='Country' placeholder='Country' name='pro_country' id='pro_country' value={proCountry} onChange={event => setCountry(event.target.value)} />
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-multiple-select-label'>Languages</InputLabel>
-              <Select onChange={event => setCountry(event.target.value)}
-                multiple
-                defaultValue={['English']}
-                id='account-settings-multiple-select'
-                labelId='account-settings-multiple-select-label'
-                input={<OutlinedInput label='Languages' id='select-multiple-language' />}
-              >
-                <MenuItem value='English'>English</MenuItem>
-                <MenuItem value='French'>French</MenuItem>
-                <MenuItem value='Spanish'>Spanish</MenuItem>
-                <MenuItem value='Portuguese'>Portuguese</MenuItem>
-                <MenuItem value='Italian'>Italian</MenuItem>
-                <MenuItem value='German'>German</MenuItem>
-                <MenuItem value='Arabic'>Arabic</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField fullWidth type='text' label='Language' placeholder='Language' name='pro_language' id='pro_language' value={proLanguage} onChange={event => setLanguage(event.target.value)} />
           </Grid>
+
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-multiple-select-label'>Time Zone</InputLabel>
-              <Select
-                multiple onChange={event => setTimeZone(event.target.value)}
-                defaultValue={['India']}
-                id='account-settings-multiple-select'
-                labelId='account-settings-multiple-select-label'
-                input={<OutlinedInput label='Time Zone' id='select-multiple-language' />}
-              >
-                <MenuItem value='India'>India</MenuItem>
-                <MenuItem value='Europe'>Europe</MenuItem>
-                <MenuItem value='London'>London</MenuItem>
-                <MenuItem value='Spain'>Spain</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField fullWidth type='text' label='Time Zone' placeholder='Time Zone' name='pro_timezone' id='pro_timezone' value={proTimeZone} onChange={event => setTimeZone(event.target.value)} />
           </Grid>
 
           <Grid item xs={12}>
@@ -228,10 +284,11 @@ const TabAccount = () => {
               minRows={2}
               placeholder='Bio'
               name='pro_bio'
-              defaultValue= {proBio}
+              id='pro_bio'
+              value= {proBio}
               onChange={event => setBio(event.target.value)}
 
-              // defaultValue='The name’s John Deo. I am a tireless seeker of knowledge, occasional purveyor of wisdom and also, coincidentally, a graphic designer. Algolia helps businesses across industries quickly create relevant 😎, scalable 😀, and lightning 😍 fast search and discovery experiences.'
+              // value='The name’s John Deo. I am a tireless seeker of knowledge, occasional purveyor of wisdom and also, coincidentally, a graphic designer. Algolia helps businesses across industries quickly create relevant 😎, scalable 😀, and lightning 😍 fast search and discovery experiences.'
             />
           </Grid>
           <Grid item xs={12}>
@@ -241,44 +298,26 @@ const TabAccount = () => {
               label='About'
               minRows={2}
               placeholder='About'
-              defaultValue={proAbout}
+              value={proAbout}
+              id='pro_about'
               name='pro_about'
               onChange={event => setAbout(event.target.value)}
             />
           </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label='API Key'
-              minRows={2}
-              placeholder='API key'
-              defaultValue={apiKey}
-              name='api_key'
-              onChange={event => setApiKey(event.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label='Username'
-              minRows={2}
-              placeholder='Cal Username'
-              defaultValue={calUname}
-              name='cal_uname'
-              onChange={event => setCalUname(event.target.value)}
-            />
-          </Grid>
-
           <Grid item xs={12}>
 
-            <button type='submit' className="btn btn-save" onClick={addProfileData}>
+            <button type='submit' className="btn btn-save" onClick={handleSubmit}>
               Save Changes
             </button>
-            <button type='reset' className="btn reset-btn">
+            {/* <button type='reset' className="btn reset-btn">
               Reset
-            </button>
+            </button> */}
+          </Grid>
+          <Grid item xs={12}>
+          {message ? (
+              <Alert message="Profile updated successfully" type="success" showIcon closable afterClose={handleClose} />
+          ) : null}
           </Grid>
         </Grid>
       </form>

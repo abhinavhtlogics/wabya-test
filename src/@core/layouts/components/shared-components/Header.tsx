@@ -112,9 +112,15 @@ const Header = () => {
                   </Link>
 
                   <div className='profile-button'>
+                  { coach ? (
+                  <>
                     <figure>
-                      <img src='../images/user-image.png' alt='' />
+                      <img src={coach.coach_profile} alt={coach.coach_name} />
                     </figure>
+                  </>
+                  ) : null
+                  }
+
 
                     <div className='dropdown'>
                       <div className='inner'>

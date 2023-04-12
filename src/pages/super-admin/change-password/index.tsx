@@ -1,53 +1,14 @@
-//  ** MUI Imports
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Select from '@mui/material/Select'
-import { styled } from '@mui/material/styles'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Button, { ButtonProps } from '@mui/material/Button'
-import FormControl from '@mui/material/FormControl'
-
 import { useRouter } from 'next/router'
 
 // ** React Imports
-import { SyntheticEvent, useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** Third Party Styles Imports
-import 'react-datepicker/dist/react-datepicker.css'
+import {database} from '../../../../firebaseConfig'
+import { collection, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { Alert } from 'antd'
 
-const ImgStyled = styled('img')(({ theme }) => ({
-  width: 120,
-  height: 120,
-  marginRight: theme.spacing(6.25),
-  borderRadius: theme.shape.borderRadius
-}))
-
-const ButtonStyled = styled(Button)<ButtonProps & { component?: ElementType; htmlFor?: string }>(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    textAlign: 'center'
-  }
-}))
-
-const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
-  marginLeft: theme.spacing(4.5),
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    marginLeft: 0,
-    textAlign: 'center',
-    marginTop: theme.spacing(4)
-  }
-}))
-const CustomInput = forwardRef((props, ref) => {
-  return <TextField inputRef={ref} label='Birth Date' fullWidth {...props} />
-})
-
-
-const EditProfile = () => {
+const EditAdminPassword = () => {
 
   const router = useRouter();
 
@@ -84,30 +45,64 @@ const EditProfile = () => {
       })
 
   };
-  const [proName, setName] = useState('');
-  const [proPhone, setPhone] = useState('');
-  const [proCountry, setCountry] = useState('');
-  const [proBio, setBio] = useState('');
-  const [proAbout, setAbout] = useState('');
 
-  // ** State
-  const [value, setValue] = useState<string>('account')
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [adminId, setAdminId] = useState('');
 
-  const handleChange = (event: SyntheticEvent, newValue: string) => {
-    setValue(newValue)
-  }
-  const [imgSrc, setImgSrc] = useState<string>('/images/user-image.png')
-  const [date, setDate] = useState<Date | null | undefined>(null)
+  useEffect(() => {
 
-  const onChange = (file: ChangeEvent) => {
-    const reader = new FileReader()
-    const { files } = file.target as HTMLInputElement
-    if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result as string)
+    const adminId = sessionStorage.getItem('adminId')
+    setAdminId(adminId);
 
-      reader.readAsDataURL(files[0])
+    if (!adminId) {
+      router.push('/super-admin/login')
     }
-  }
+
+}, [adminId])
+
+
+  const checkCurrentPassword = async (adminId, currentPassword) => {
+    const userD = doc(collection(database, 'admin_user'), adminId);
+    const userDoc = await getDoc(userD);
+    const userData = userDoc.data();
+
+    return userData.password === currentPassword;
+  };
+
+  // function to change password
+  const changePassword = async (adminId, newPassword) => {
+    const update = doc(collection(database,"admin_user"),adminId);
+    await updateDoc(update, {
+      password: newPassword
+    });
+  };
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !repeatPassword) {
+      setErrorMessage("Please fill in all fields.");
+
+      return;
+    }
+
+    if (newPassword !== repeatPassword) {
+      setErrorMessage("New password and confirm password do not match.");
+
+      return;
+    }
+
+    const currentPasswordMatches = await checkCurrentPassword(adminId, currentPassword);
+    if (!currentPasswordMatches) {
+      setErrorMessage("Current password is incorrect.");
+
+      return;
+    }
+
+    await changePassword(adminId, newPassword);
+    setErrorMessage("Password changed successfully!");
+  };
 
   return (
     <section className="client-password">
@@ -124,7 +119,7 @@ const EditProfile = () => {
                       <label>current password:</label>
                     </div>
                     <div className="col-sm-6">
-                        <input type="password" name="current_pass" id="current_pass" className='form-control' onClick={(e) => handleClick(e)} /> <span id="dummy1" onClick={(e) => handleClick(e)}></span>
+                        <input type="password" name="current_pass" id="current_pass" className='form-control' onClick={(e) => handleClick(e)} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} /> <span id="dummy1" onClick={(e) => handleClick(e)}></span>
                         <span id="result1">Result is : </span>
                     </div>
                   </div>
@@ -133,7 +128,7 @@ const EditProfile = () => {
                       <label>new password:</label>
                     </div>
                     <div className="col-sm-6">
-                        <input type="password" name="new_pass" id="new_pass" className='form-control' onClick={(e) => handleClick(e)} /> <span id="dummy2" onClick={(e) => handleClick(e)}></span>
+                        <input type="password" name="new_pass" id="new_pass" className='form-control' onClick={(e) => handleClick(e)} value={newPassword} onChange={e => setNewPassword(e.target.value)} /> <span id="dummy2" onClick={(e) => handleClick(e)}></span>
                         <span id="result2">Result is : </span>
                     </div>
                   </div>
@@ -142,13 +137,16 @@ const EditProfile = () => {
                       <label>confirm new password:</label>
                     </div>
                     <div className="col-sm-6">
-                        <input type="password" name="confirm_pass" id="confirm_pass" className='form-control' onClick={(e) => handleClick(e)} /> <span id="dummy3" onClick={(e) => handleClick(e)}></span>
+                        <input type="password" name="confirm_pass" id="confirm_pass" className='form-control' onClick={(e) => handleClick(e)} value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} /> <span id="dummy3" onClick={(e) => handleClick(e)}></span>
                         <span id="result3">Result is : </span>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-sm-12">
-                      <input type="submit" value="save" className='btn btn-save' />
+                      <input type="submit" value="save" className='btn btn-save' onClick={handleChangePassword} />
+                    </div>
+                    <div className="col-sm-12">
+                      {errorMessage && <Alert message={errorMessage} className='mt-4' type="success"/> }
                     </div>
                   </div>
                 </form>
@@ -167,4 +165,4 @@ const EditProfile = () => {
   )
 }
 
-export default EditProfile
+export default EditAdminPassword

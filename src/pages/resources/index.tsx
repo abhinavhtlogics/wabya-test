@@ -14,7 +14,7 @@ const ResourceBasic = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('coachId')
+    const token = sessionStorage.getItem('Token')
 
     if(!token){
         router.push('/pages/login')

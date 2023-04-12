@@ -92,9 +92,9 @@ const AdminVerticalLayout = (props: LayoutProps) => {
                   </Link>
 
                   <div className='profile-button'>
-                    <figure>
+                    {/* <figure>
                       <img src={`${router.basePath}/images/user-image.png`} alt='' />
-                    </figure>
+                    </figure> */}
 
                     <div className='dropdown'>
                       <div className='inner'>

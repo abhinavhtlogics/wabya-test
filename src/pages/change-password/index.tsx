@@ -4,11 +4,11 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
 // ** Third Party Styles Imports
-import {database} from '../../../../firebaseConfig'
+import {database} from '../../../firebaseConfig'
 import { collection, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { Alert } from 'antd'
 
-const EditProfile = () => {
+const EditCoachPassword = () => {
 
   const router = useRouter();
 
@@ -50,33 +50,33 @@ const EditProfile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const[userId, setUserId] = useState('');
+  const [coachId, setCoachId] = useState('');
 
   useEffect(() => {
 
-    const userId = sessionStorage.getItem('userId')
-    setUserId(userId);
+    const coachId = sessionStorage.getItem('coachId')
+    setCoachId(coachId);
 
-    if (!userId) {
-      router.push('/client/login')
+    if (!coachId) {
+      router.push('/pages/login')
     }
 
-}, [userId])
+}, [coachId])
 
 
-  const checkCurrentPassword = async (userId, currentPassword) => {
-    const userD = doc(collection(database, 'client_user'), userId);
+  const checkCurrentPassword = async (coachId, currentPassword) => {
+    const userD = doc(collection(database, 'coaches_user'), coachId);
     const userDoc = await getDoc(userD);
     const userData = userDoc.data();
 
-    return userData.client_password === currentPassword;
+    return userData.coach_password === currentPassword;
   };
 
   // function to change password
-  const changePassword = async (userId, newPassword) => {
-    const update = doc(collection(database,"client_user"),userId);
+  const changePassword = async (coachId, newPassword) => {
+    const update = doc(collection(database,"coaches_user"),coachId);
     await updateDoc(update, {
-      client_password: newPassword
+      coach_password: newPassword
     });
   };
 
@@ -93,14 +93,14 @@ const EditProfile = () => {
       return;
     }
 
-    const currentPasswordMatches = await checkCurrentPassword(userId, currentPassword);
+    const currentPasswordMatches = await checkCurrentPassword(coachId, currentPassword);
     if (!currentPasswordMatches) {
       setErrorMessage("Current password is incorrect.");
 
       return;
     }
 
-    await changePassword(userId, newPassword);
+    await changePassword(coachId, newPassword);
     setErrorMessage("Password changed successfully!");
   };
 
@@ -165,4 +165,4 @@ const EditProfile = () => {
   )
 }
 
-export default EditProfile
+export default EditCoachPassword

@@ -103,10 +103,12 @@ const Dashboard = () => {
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
   const [selectedTime, setselectedTime]: any = useState();
   const [next, setNext] = useState(false);
+
   const [eventChoose, setEventChoose] = useState(false);
   const [videoCall, setVideoCall] = useState(false);
   const [coach, setCoach] = useState(false);
@@ -122,6 +124,8 @@ const Dashboard = () => {
   const [coachesCalEventSelected, setcoachesCalEventSelected] = useState();
 
   const [modal_action, setmodal_action] = useState("");
+  const [res_action, setres_action] = useState("");
+
 
   //const [coachesCalUsername, setcoachesCalUsername] = useState('abhinav-kumar-r6xoe0');
   const [coachesCalDefaultScheduleId, setcoachesCalDefaultScheduleId] =
@@ -138,8 +142,7 @@ const Dashboard = () => {
     const [collectionUpdateId, setcollectionUpdateId] =
     useState("");
 
-    const [updateAction, setupdateAction] =
-    useState(false);
+  const [updateAction, setupdateAction] = useState(false);
   const [clientCalName, setclientCalName] = useState("");
   const [clientCalEmail, setclientCalEmail] = useState("");
 
@@ -154,6 +157,7 @@ const Dashboard = () => {
   const scheduleNewSes = () => {
     setcollectionUpdateId("");
     setmodal_action('SCHEDULE A SESSION');
+    setres_action("scheduled");
     setarray1([]);
     settimeslot_load(false);
     setupdateAction(false);
@@ -163,6 +167,7 @@ const Dashboard = () => {
   const scheduleReSes = (event) => {
     setcollectionUpdateId(event.target.getAttribute('data-id'));
     setmodal_action('RESCHEDULE A SESSION');
+    setres_action("rescheduled");
     setarray1([]);
     settimeslot_load(false);
     setupdateAction(true);
@@ -317,8 +322,7 @@ const Dashboard = () => {
 
     });
 
-
-// setNext(true);
+    setNext(true);
 };
 
 
@@ -371,7 +375,6 @@ for (let index = 0; index < data.data.length; index++) {
     let original_date=tomonth+'/'+todate+'/'+toyear; console.log(original_date);
     let start_time=new Date(data.data[index].start_time * 1000).toLocaleTimeString();
       session.push({date:original_date,start_time:start_time,duration:data.data[index].duration,coach_name:meeting[index2].coach_name})
-      break;
     }
 
   }
@@ -423,7 +426,19 @@ setmysSession(session);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsVideoCallVisible(false);
+  };
+
+  const showVideoCallModal = () => {
+    setIsVideoCallVisible(true);
+  };
+
+  const showVideoCallModalOk = () => {
+    setIsVideoCallVisible(false);
+  };
+
+  const showVideoCallModalCancel = () => {
+    setIsVideoCallVisible(false);
   };
 
   const [userId, setUserId] = useState();
@@ -885,6 +900,10 @@ setarray1(timeslots);
     }
   }, [meeting]);
 
+  if(!client){
+    return <div><img src={`${router.basePath}/images/loading.gif`} style={{ display:"block", margin:"0px auto"}} /></div>;
+  }
+
   return (
     <section className="client-dashboard">
       <div className="container">
@@ -992,23 +1011,24 @@ setarray1(timeslots);
         {/* video join call - modal starts */}
         <Modal
           centered
-          className="session-history-modal"
-          visible={videoCall}
-          onOk={videoOk}
-          onCancel={videoCancel}
-          width={1200}
+          className="video-call-modal"
+          visible={isVideoCallVisible}
+          onOk={showVideoCallModalOk}
+          onCancel={showVideoCallModalCancel}
+          width={1400}
+          height={620}
           footer={[]}
         >
           <div className="modal-data">
             <div className="modall">
-              <div className="history-modal">
+              {/* <div className="history-modal">
                 <h4>Join Video Call</h4>
-              </div>
+              </div> */}
               <div className="video-call-frame">
                 <iframe
-                  src="https://app.cal.com/video/dU8bH8FDcsaH1DFYFkS2Xw"
+                  src="https://abhinav19.daily.co/kNbrMIQyrVBz0KjApLVt"
                   width="100%"
-                  height="450px"
+                  height="540px"
                   frameborder="0"
                 ></iframe>
               </div>
@@ -1162,6 +1182,9 @@ setarray1(timeslots);
           footer={[]}
         >
           <div className="modal-data">
+
+
+
             {next ? (
               <>
                 <div className="meeting-schedule">
@@ -1169,21 +1192,21 @@ setarray1(timeslots);
                     <div className="col-sm-12">
                       <div className="tick-icon">
                         <i className="fa fa-check"></i>
-                        <h2>This meeting is scheduled</h2>
+                        <h2>This meeting is { res_action } </h2>
                         <p>
                           We emailed you and the other attendees a calendar
                           invitation with all the details.
                         </p>
                       </div>
-                      <div className="meet">
+                      {/* <div className="meet">
                         <div className="left-meet">
                           <strong>What</strong>
                         </div>
                         <div className="right-meet">
                           <p>{meetingtitle}</p>
                         </div>
-                      </div>
-                      <div className="meet">
+                      </div> */}
+                      {/* <div className="meet">
                         <div className="left-meet">
                           <strong>When</strong>
                         </div>
@@ -1193,8 +1216,8 @@ setarray1(timeslots);
                             15:30 - 16:30 <span> (India Standard Time) </span>
                           </p>
                         </div>
-                      </div>
-                      <div className="meet">
+                      </div> */}
+                      {/* <div className="meet">
                         <div className="left-meet">
                           <strong>Who</strong>
                         </div>
@@ -1208,7 +1231,7 @@ setarray1(timeslots);
                             <span>{meetinguser2email}</span>
                           </p>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -1345,9 +1368,9 @@ setarray1(timeslots);
                       <td></td>
                     </tr>
                     <tr>
-                      <td>
+                      {/* <td>
                         <p>Coach Name</p>
-                      </td>
+                      </td> */}
                       <td></td>
                       <td></td>
                       <td>
@@ -1361,14 +1384,14 @@ setarray1(timeslots);
                       return (
                         <>
                           <tr className="table-pad">
-                            <td>{data.coach_name}</td>
+                            {/* <td>{data.coach_name}</td> */}
                             <td>
                               {new Date(data.meetingDate).toLocaleDateString()}
                             </td>
                             <td>
                               <Link
                                 passHref
-                                href={data.meetingLink}
+                                href={`videocall/${data.meetingName}`}
                                 target="_blank"
                               >
                                 <a className="btn">Join Video</a>
@@ -1380,8 +1403,7 @@ setarray1(timeslots);
                                 data-id={data.meeting_id}
                                 onClick={scheduleReSes}
                               >
-                                {" "}
-                                reschedule{" "}
+                                reschedule
                               </button>
                             </td>
                           </tr>

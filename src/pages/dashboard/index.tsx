@@ -42,20 +42,21 @@ const Dashboard = () => {
 
 
   return (
-
+    <>
+    {
+      coach ?
+      (
+          <>
           <section className="user-profile">
             <div className="container">
               <div className="row">
 
                     <div className="col-sm-12 top">
                       <div className="inner-info">
-                        <figure><img src="../images/user-image.png" alt=""/></figure>
-                        {
-                          coach ?
-                          (
+                        <figure><img src={coach.coach_profile} alt={coach.coach_name} /></figure>
+
                               <h2>{coach.coach_name}</h2>
-                          ) : null
-                        }
+
                       <div className="right-area">
                         <div className="accepting-info">
                         <span>Accepting New Clients</span>
@@ -82,9 +83,9 @@ const Dashboard = () => {
                     <div className="col-sm-4 left mrb-30">
                       <div className="info-grid">
                       <p>Information</p>
-                      <p>Contact Details: <span><a href="mailto:name@gmail.com">name@gmail.com</a></span></p>
-                      <p>Time Zone: <span>Europe, London</span></p>
-                      <p>Languages: <span>English, French</span></p>
+                      <p>Contact Details: <span><a href={`mailto:${coach.coach_email}`}>{coach.coach_email}</a></span></p>
+                      <p>Time Zone: <span>{coach.coach_timezone}</span></p>
+                      <p>Languages: <span>{coach.coach_language}</span></p>
 
                       </div>
                     </div> {/* <!--/ left --> */}
@@ -92,16 +93,19 @@ const Dashboard = () => {
                     <div className="col-sm-8 right mrb-30">
                       <div className="info-grid">
                       <h3>Bio</h3>
-                      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh eusimod tincidunt ut laoret dolore manga aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamorper. sed diam nonummy nibh eusimod tincidunt ut laoret dolore manga aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamorper.</p>
+                      <p>{coach.coach_bio}</p>
                       <h3>About</h3>
-                      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh eusimod tincidunt ut laoret dolore manga aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamorper.</p>
+                      <p>{coach.coach_about}</p>
 
                       </div>
                     </div> {/* <!--/ left --> */}
               </div> {/* <!--/ row --> */}
             </div>
           </section>
-
+          </>
+      ) : null
+    }
+    </>
 
   )
 }

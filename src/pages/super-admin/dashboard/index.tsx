@@ -42,7 +42,7 @@ return (
             <>
               <div className="col-sm-12 top">
                 <div className="inner-info">
-                  <figure><img src="../../images/user-image.png" alt=""/></figure>
+                  <figure><img src={ data.profile } alt={ data.name } /></figure>
                   <h2>{ data.name } </h2>
                   <div className="right-area">
                     <div className="dropdown">
