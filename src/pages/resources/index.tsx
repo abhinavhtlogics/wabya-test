@@ -14,10 +14,10 @@ const ResourceBasic = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('Token')
+    const token = sessionStorage.getItem('coachId')
 
     if(!token){
-       // router.push('/pages/login')
+        router.push('/pages/login')
     }
 }, [])
 
