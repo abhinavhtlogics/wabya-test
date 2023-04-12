@@ -21,34 +21,35 @@ const ViewBasic = () => {
 
   // next meeting scheduled
   const [nextMeeting, setNextMeeting] = useState(null);
-  useEffect(() => {
-    const today = new Date();
-    db.collection("meeting")
-      .where("user_id", "==", userId)
-      .where("meeting_date", ">=", today)
-      .orderBy("meeting_date")
-      .limit(1)
-      .get()
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const doc = querySnapshot.docs[0];
-          const meetingDate = doc.data().meetingDate.toDate();
-          const meetingTime = doc.data().meetingTime.toDate();
-          setNextMeeting(new Date(
-            meetingDate.getFullYear(),
-            meetingDate.getMonth(),
-            meetingDate.getDate(),
-            meetingTime.getHours(),
-            meetingTime.getMinutes(),
-            meetingTime.getSeconds(),
-            meetingTime.getMilliseconds()
-          ));
-        }
-      })
-      .catch((error) => {
-        console.error("Error getting next meeting date:", error);
-      });
-  }, [userId]);
+
+  // useEffect(() => {
+  //   const today = new Date();
+  //   db.collection("meeting")
+  //     .where("user_id", "==", userId)
+  //     .where("meeting_date", ">=", today)
+  //     .orderBy("meeting_date")
+  //     .limit(1)
+  //     .get()
+  //     .then((querySnapshot) => {
+  //       if (!querySnapshot.empty) {
+  //         const doc = querySnapshot.docs[0];
+  //         const meetingDate = doc.data().meetingDate.toDate();
+  //         const meetingTime = doc.data().meetingTime.toDate();
+  //         setNextMeeting(new Date(
+  //           meetingDate.getFullYear(),
+  //           meetingDate.getMonth(),
+  //           meetingDate.getDate(),
+  //           meetingTime.getHours(),
+  //           meetingTime.getMinutes(),
+  //           meetingTime.getSeconds(),
+  //           meetingTime.getMilliseconds()
+  //         ));
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error getting next meeting date:", error);
+  //     });
+  // }, [userId]);
 
 
   useEffect(() => {
