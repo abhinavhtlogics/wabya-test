@@ -46,7 +46,7 @@ const ClientDetail = () => {
       } catch (error) {
         console.log(error);
       }
-    };
+   
     
   }, [router.query.id]);
 
