@@ -58,7 +58,7 @@ const Pricing = () => {
                 <>
                   <div className="front-pricing">
                     <div className="pr-modal">
-                      <div><i className="fa fa-angle-left"></i></div>
+                      <div onClick={handleCancel}><i className="fa fa-angle-left"></i></div>
                       <div className="pro"><span>PROBONO COACHING</span></div>
                       <div onClick={handleCancel}><i className="fa fa-close"></i></div>
                     </div>
