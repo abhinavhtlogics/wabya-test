@@ -20,7 +20,7 @@ const CoachingJourney = () => {
             4.Encourage self-discovery throughout.
             </p>
             <p>Ultimately, the coaching process encourages you to become more aware of your strengths and abilities, to take control and responsibility for your life - and to realise your goals.</p>
-            <div><Link href="#"><a className="btn">book a free coaching session</a></Link></div>
+            <div><Link href="/pages/register"><a className="btn">book a free coaching session</a></Link></div>
           </div>
             </div>
 
