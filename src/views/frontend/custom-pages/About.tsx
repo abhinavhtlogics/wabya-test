@@ -49,6 +49,7 @@ const About = () => {
 Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
             </div>
             <div className="meet-client">
+              <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Co-founder"  />
@@ -57,6 +58,8 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <span>Co-Founder</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
+              </div>
+              <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Co-founder"  />
@@ -65,6 +68,9 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <span>Co-Founder</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
+              </div>
+              
+              <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Head of Collaboration"  />
@@ -73,6 +79,9 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <span>Head of Collaboration</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
+              </div>
+              
+              <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Chief People Officer"  />
@@ -80,6 +89,7 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <h4>Ciara</h4>
                 <span>Chief People Officer</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
+              </div>
               </div>
 
             </div>
