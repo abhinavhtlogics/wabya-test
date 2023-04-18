@@ -133,11 +133,7 @@ const Dashboard = () => {
 
   const [coachesCalUserId, setcoachesCalUserId] = useState();
 
-  const [clientCalAPIkey, setclientCalAPIkey] = useState(
-    "cal_test_023256ac85011cded16d8d4f8f137d99"
-  );
-  const [clientCaluserName, setclientCaluserName] =
-    useState("abhinavkumar0325");
+  
 
     const [collectionUpdateId, setcollectionUpdateId] =
     useState("");
@@ -211,21 +207,7 @@ const Dashboard = () => {
     setbookingLoad(true);
     setbookingError(false);
     if(updateAction == false){
-    //console.log("abc");
-
-    // var objectWithData = {
-    //   start: "" + meetingdate + " " + meetingtime + ":00 GMT+0530",
-    //   end: "" + meetingdate + " " + meetingendtime + ":00 GMT+0530",
-
-    //   name: "" + clientFirebaseName + "",
-    //   email: "" + clientFirebaseEmail + "",
-    //   timeZone: "" + coachesCalTimezone + "",
-    //   eventTypeId: parseInt(coachesCalEventSelected,10),
-    //   location: "",
-    //   language: "",
-    //   metadata: {},
-    //   customInputs: [],
-    // };
+   
     try {
       const res = await fetch(
         "https://api.daily.co/v1/rooms",
@@ -248,19 +230,14 @@ const Dashboard = () => {
       setmeetingCreatedAt(data.created_at);
       setBookedId(data.id);
       if (res.status == 200) {
-        // setbookingLoad(false);
-        // setmeetingtitle(data.title);
-        // setmeetinguser(data.user.name);
-        // setmeetinguser2(data.attendees[0].name);
-        // setmeetinguseremail(data.user.email);
-        // setmeetinguser2email(data.attendees[0].email);
+      
 
         setmeetingLink(data.url);
         setNext(true);
 
         setBookedId(data.id);
 
-        getUpcomingBooking();
+     
       } else {
         setbookingLoad(false);
         setbookingError(true);
@@ -351,8 +328,8 @@ const getSessionHistory = async () => {
     if (res.status == 200) {
 
 console.log('meeting');
-console.log(data);
-console.log(meeting);
+//console.log(data);
+//console.log(meeting);
 
 for (let index = 0; index < data.data.length; index++) {
 
@@ -366,9 +343,9 @@ for (let index = 0; index < data.data.length; index++) {
     if(data.data[index].room == meeting[index2].meetingName){
       // console.log(index);
       // console.log(index2);
-      console.log(data.data[index].room);
-      console.log(data.data[index].start_time);
-      console.log(data.data[index].duration);
+      // console.log(data.data[index].room);
+      // console.log(data.data[index].start_time);
+      // console.log(data.data[index].duration);
       let todate=new Date(data.data[index].start_time * 1000).getDate();
     let tomonth=new Date(data.data[index].start_time * 1000).getMonth()+1;
     let toyear=new Date(data.data[index].start_time * 1000).getFullYear();
@@ -424,6 +401,9 @@ setmysSession(session);
   const handleOk = () => {
     setIsModalVisible(false);
   };
+  const handleCancel2 = () => {
+    setIsModalVisible(false);
+  };
 
   const handleCancel = () => {
     setIsVideoCallVisible(false);
@@ -474,10 +454,9 @@ setmysSession(session);
     getMeeting();
 
 
-    getUsers();
+   
     if (coachesCalApiKey) {
-      getBookedSchedule();
-      getEventTypes();
+    
     }
   }, [coachesCalApiKey, userId]);
 
@@ -506,34 +485,24 @@ setmysSession(session);
     if (client != null) {
       console.log(client);
       //console.log(client.client_api);
-      setclientCalAPIkey("cal_test_023256ac85011cded16d8d4f8f137d99");
+     // setclientCalAPIkey("cal_test_023256ac85011cded16d8d4f8f137d99");
       //setclientCaluserName(client.client_uname);
       setclientFirebaseId(client.id);
       setclientFirebaseName(client.client_name);
       setclientFirebaseEmail(client.client_email);
-      setcoachesCalUsername(client.assign_coach_uname);
-      setcoachesCalApiKey(client.assign_coach_api);
+      //setcoachesCalUsername(client.assign_coach_uname);
+      
       setcoachesFirebaseId(client.assign_coach_id);
     }
 
-    if (clientCalAPIkey != "") {
-      getUpcomingBooking();
-      //
-    }
+   
 
     //     if(!token){
     //         router.push('/pages/login')
     //     }
-  }, [client, clientCalAPIkey]);
+  }, [client]);
 
-  // const handleTimeClick = (event: any) => {
-  //   //console.log(event.target.getAttribute('data-key'))
-
-  //   // selectedTime.splice(0, selectedTime.length);
-  //   //selectedTime.splice(0, array1.length);
-  //   setselectedTime(event.target.getAttribute('data-key'))
-  //   //console.log(selectedTime)
-  // }
+  
 
   const handleTimeClick = (event: any) => {
     // //console.log( event.target.getAttribute("data-key"));
@@ -662,111 +631,11 @@ setmysSession(session);
     return tempTime;
   }
 
-  /* Get All Event  of Coaches */
+  
 
-  const getEventTypes = async () => {
-   // settype_load(true);
+  
 
-   // settype_err_load(false);
-
-    try {
-      const res = await fetch(
-        "" + apiUrl + "v1/event-types?apiKey=" + coachesCalApiKey + "",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      if (res.status == 200) {
-        //console.log(data);
-        setcoachesEvents(data.event_types);
-
-         if(data.event_types[0].id != null){
-
-
-         setcoachesCalEventSelected(data.event_types[0].id);
-         }
-        settype_load(false);
-      }
-    } catch (err) {
-      //console.log(err);
-      settype_load(false);
-
-      settype_err_load(true);
-    }
-
-    // setNext(true);
-  };
-
-  /* Get All Event  of Coaches */
-
-  const getUpcomingBooking = async () => {
-    try {
-      const res = await fetch(
-        "" + apiUrl + "v1/bookings?apiKey=" + clientCalAPIkey + "",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      if (res.status == 200) {
-        //console.log(data);
-        //setcoachesEvents(data.event_types);
-        setupcomingMetting(data.bookings);
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-
-    // setNext(true);
-  };
-
-  /* Get All Event  of Coaches */
-
-  const getUsers = async () => {
-    try {
-      const res = await fetch(
-        "" + apiUrl + "v1/users?apiKey=" + coachesCalApiKey + "",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      if (res.status == 200) {
-        //console.log(data);
-        //setcoachesEvents(data.event_types);
-
-        for (let index = 0; index < data.users.length; index++) {
-          if (data.users[index].username == coachesCalUsername) {
-            setcoachesCalUserId(data.users[index].id);
-
-
-              setcoachesCalDefaultScheduleId(data.users[index].defaultScheduleId);
-
-
-            setcoachesCalName(data.users[index].name);
-            setcoachesCalEmail(data.users[index].email);
-            setcoachesCalTimezone(data.users[index].timeZone);
-
-            break;
-          }
-        }
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-
-    // setNext(true);
-  };
+ 
 
 
   /**Get Timeslot */
@@ -821,73 +690,7 @@ setarray1(timeslots);
     //getBookedSchedule();
   };
 
-  /* Get Booked Schedule  of Coaches */
-
-  const getBookedSchedule = async () => {
-    var dateFrom = "2023-03-16";
-    var dateTo = "2023-03-17";
-    var busySchedule = [];
-
-    try {
-      const res = await fetch(
-        "" +
-          apiUrl +
-          "v1/availability?apiKey=" +
-          coachesCalApiKey +
-          "&dateFrom=" +
-          dateFrom +
-          "&dateTo=" +
-          dateTo +
-          "&username=" +
-          coachesCalUsername +
-          "",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      if (res.status == 200) {
-        if (data.busy.length > 0) {
-          //console.log(data.busy);
-          for (let index = 0; index < data.busy.length; index++) {
-            var start = data.busy[index].start;
-
-            let stime = new Date(start).toLocaleTimeString("en-US");
-
-            var convertedStartTime = new Date("1/1/2013 " + stime);
-            var startTime =
-              convertedStartTime.getHours() +
-              ":" +
-              convertedStartTime.getMinutes() +
-              ":00";
-
-            var end = data.busy[index].end;
-
-            let etime = new Date(end).toLocaleTimeString("en-US");
-
-            var convertedEndTime = new Date("1/1/2013 " + etime);
-            var endTime =
-              convertedEndTime.getHours() +
-              ":" +
-              convertedEndTime.getMinutes() +
-              ":00";
-
-            busySchedule.push({ starttime: startTime, endtime: endTime });
-            //setbookedTimeslot(busySchedule);
-
-            //console.log(bookedTimeslot);
-          }
-        }
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-    //console.log(busySchedule);
-    // getTimeslots();
-  };
+ 
   function setCharAt(str, index, chr) {
     if (index > str.length - 1) return str;
     return str.substring(0, index) + chr + str.substring(index + 1);
@@ -940,7 +743,7 @@ setarray1(timeslots);
           className="session-history-modal"
           visible={isModalVisible}
           onOk={handleOk}
-          onCancel={handleCancel}
+          onCancel={handleCancel2}
           width={1100}
         >
           <div className="modal-data">
@@ -964,8 +767,8 @@ setarray1(timeslots);
                       </tr>
                     </thead>
                     <tbody>
-
-                    {mySession.map((mySes, index) => {
+{
+                     mySession.length> 0 ? mySession.map((mySes, index) => {
                       return (
                         <tr>
                         <th>session {index +1 }</th>
@@ -996,7 +799,8 @@ setarray1(timeslots);
                       </tr>
 
                       );
-                    })}
+                    }) : <tr><td colspan='5'>No data Found</td></tr> }
+                    
 
 
                     </tbody>

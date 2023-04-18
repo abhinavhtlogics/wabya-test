@@ -91,7 +91,9 @@ const RegisterPage = () => {
     validateOnBlur: false,
     validateOnChange: false,
 
-    onSubmit: (values, action) => {
+    onSubmit: async (values, action) => {
+
+      if(await countData(values.clientEmail) == 0){
       console.log(
         "🚀 ~ file: index.tsx ~ line 81 ~ Registration ~ values",
         values,
@@ -108,8 +110,7 @@ const RegisterPage = () => {
             client_uname : String(), 
             client_uid : Number(),
             assign_coach_id:coachData[randomNo].coach_id,
-            assign_coach_api:coachData[randomNo].coach_api,
-            assign_coach_uname:coachData[randomNo].coach_uname,
+           
           })
             .then(() => {
               toast.success('Client registered successfully')
@@ -121,6 +122,10 @@ const RegisterPage = () => {
 
       );
       action.resetForm();
+          }else{
+            toast.error('Email Already Registerd')
+          }
+     
     },
   });
 
@@ -139,9 +144,10 @@ const [randomNo, setrandomNo] = useState(0);
   // coach data fetch
   const getCoachData = async () => {
 console.log('test');
-    const queryDoc = query(coachRef, where('coach_api', '!=', ''));
+    const queryDoc = query(coachRef, where('coach_email', '!=', ''));
 
     await getDocs(queryDoc).then(response => {
+      console.log(response.docs.length);
       setCoachData(
         response.docs.map(data => {
           return { ...data.data(), coach_id: data.id }
@@ -149,6 +155,19 @@ console.log('test');
       )
     })
   }
+
+
+   // coach data fetch
+   const countData = async (client_em:string) => {
+    console.log('test');
+        const queryDoc = query(clientRef, where('client_email', '==', client_em));
+    let count_data=0
+        await getDocs(queryDoc).then(response => {
+          console.log(response.docs.length);
+          count_data=response.docs.length;
+        })
+        return count_data;
+      }
   useEffect(() => {
 
 
@@ -164,7 +183,7 @@ console.log('test');
 
     console.log(coachData);
     
-    setrandomNo(Math.floor(Math.random() * (2 - 0 + 1)) + 0);
+    setrandomNo(Math.floor(Math.random() * (coachData.length - 0 + 1)) + 0);
 
 
   }, [coachData])
