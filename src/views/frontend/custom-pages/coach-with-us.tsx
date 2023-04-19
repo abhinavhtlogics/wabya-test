@@ -108,7 +108,7 @@ const CoachWithUs = () => {
                 <h2>how much <br/>do I get paid?</h2>
               <p>Our Mission is to make coaching accessible and affordable for everyone - so we’ve established different payment tiers based on your experience level.</p>
               <p>In all cases, your hours can be counted towards additional accreditation with the ICF, AC or EMCC.</p>
-              <p>As always, don’t be shy to <a href="#">reach out</a> with any questions!</p>
+              <p>As always, don’t be shy to <Link passHref href='/contact'><a>reach out</a></Link> with any questions!</p>
               </div>
             </div>
 
@@ -130,7 +130,9 @@ const CoachWithUs = () => {
 
               <div className="dropdown">
                 <div className="inner">
-                <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">probono <span><small>free of charge sessions</small></span></button>
+                <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">probono <span>
+                  <Link href='/client/login' passHref><a className="text-white"><small>client attestation</small></a></Link>
+                  </span></button>
                 <div className="dropdown-menu"><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
               </div>
               </div>

@@ -180,7 +180,7 @@ const Pricing = () => {
             <div className="note bottom">
               <h5>Note: we won’t take payment details until you’ve completed your free discovery session
 and decided to go ahead with your coaching journey. </h5>
-              <button className="btn">book my session</button>
+              <Link href='/client/register' passHref><a className="btn">book my session</a></Link>
             </div>
           </div>
 
