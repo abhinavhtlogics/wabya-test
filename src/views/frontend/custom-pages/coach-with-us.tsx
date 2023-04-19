@@ -101,7 +101,7 @@ const CoachWithUs = () => {
 
         <section className="get-paid">
           <div className="container">
-            <div className="row">
+            <div className="row align-items-center">
 
             <div className="col-sm-6 left">
               <div className="inner">
