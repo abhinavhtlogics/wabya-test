@@ -13,9 +13,9 @@ const CoachWithUs = () => {
               <div className="inner">
                 <div className="info-grid">
                   <h2>welcome!</h2>
-                  <p>Hello there, you wonderful human! We know that, by your chosen profession, you get <a href="#">what we’re trying to do here with wabya.</a></p>
+                  <p>Hello there, you wonderful human! We know that, by your chosen profession, you get <Link passHref href='/about'><a>what we’re trying to do here with wabya.</a></Link></p>
                 <p>We’re also delighted that you would consider working with us - so let’s get you started addressing a few questions most coaches typically have.</p>
-                <p>Pssst... can’t find what you’re looking for? <a href="#">Drop us a line!</a></p>
+                <p>Pssst... can’t find what you’re looking for? <Link passHref href='/contact'><a>Drop us a line!</a></Link></p>
                 <p><Link href="/apply" ><a className="btn">apply to be a wabya coach</a></Link></p>
                 </div>
               </div>
@@ -30,7 +30,7 @@ const CoachWithUs = () => {
             <div className="row align-items-center">
 
             <div className="col-sm-12 mrb-70">
-              <h2>Why should I coach <br/>with wabya?</h2>
+              <h2>Why should I coach with wabya?</h2>
               <h4>Because through both our probono and paying coaching streams you’ll be helping transform people’s lives.</h4>
             </div>
 
@@ -71,7 +71,7 @@ const CoachWithUs = () => {
             <div className="col-sm-3 es-coll">
               <div className="inner">
                 <h3>Step 1</h3>
-              <p>Fill out <a href="#">this form</a></p>
+              <p>Fill out <Link href='/apply' passHref><a>this form</a></Link></p>
               </div>
             </div>
 

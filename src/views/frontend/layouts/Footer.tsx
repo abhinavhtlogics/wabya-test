@@ -97,9 +97,9 @@ const Footer = () => {
                 <div className='col-sm-6'>
                   <div className='wg-1'>
                     <div className='icon-ft'>
-                      <a target='_blank' href='#'>
-                        <i className='fa fa-instagram'></i>
-                      </a>
+                      <Link href='https://www.instagram.com/wearebecauseyouare/' passHref>
+                        <a target='_blank'><i className='fa fa-instagram'></i></a>
+                      </Link>
                       <a target='_blank' href='#'>
                         <i className='fa fa-youtube-play'></i>
                       </a>
