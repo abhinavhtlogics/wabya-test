@@ -14,7 +14,7 @@ const About = () => {
     <>
     <section className="banner-info">
       <div className="container">
-        <div className="row">
+        <div className="row align-items-center">
         <div className="col-sm-6 left">
           <div className="inner">
           <h2> hi, nice to meet you </h2>
