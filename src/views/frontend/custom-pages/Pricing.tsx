@@ -20,6 +20,11 @@ const Pricing = () => {
     setIsModalVisible(false);
   };
 
+
+  const handleClose = () => {
+    setIsThankModal(false);
+  };
+
   const thankModal = () => {
     setIsModalVisible(false)
     setIsThankModal(true)
@@ -163,8 +168,10 @@ const Pricing = () => {
                 <div className="thank-modal">
                   <div className="front-pricing thank-note">
                     <div className="pr-modal">
-                      <div><i className="fa fa-angle-left"></i></div>
-                      <div><span>thank you</span></div>
+                      {/* <div onClick={handleBack}><i className="fa fa-angle-left"></i></div> */}
+                      <div></div>
+                      <div className="text-center"><span>thank you</span></div>
+                      <div onClick={handleClose}><i className="fa fa-close"></i></div>
                     </div>
                     <div className="divider"></div>
                     <div className="para-modal">
