@@ -32,7 +32,7 @@ const Footer = () => {
 
                 <div className='col-sm-2'>
                   <div className='wg-1'>
-                    <h4>about coaching</h4>
+                    <h4>coaching journey</h4>
                     <ul>
                       <li>
                         <Link href='#'>this is coaching</Link>

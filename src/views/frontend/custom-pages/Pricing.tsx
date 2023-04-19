@@ -36,7 +36,7 @@ const Pricing = () => {
 
             <div className="col-sm-6">
             <h2><span>pricing options</span> pick your plan</h2>
-            <p>We’ve got options to fit your needs - and your budget. Whichever you pick, remember that every coach we work with has graduated from a <u>GCMA</u> member’s accredited programme.</p>
+            <p>We’ve got options to fit your needs - and your budget. Whichever you pick, remember that every coach we work with has graduated from a <a href="https://www.emccglobal.org/about_emcc/gcma/" target="_blank" rel="noreferrer"><u>GCMA</u></a> member’s accredited programme.</p>
             <p>Note: the most you’ll pay for a coaching session is £65. The least you’ll pay is £40.</p>
             </div>
             <div className="col-sm-6">
