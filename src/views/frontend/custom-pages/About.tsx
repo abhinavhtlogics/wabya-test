@@ -25,14 +25,14 @@ const About = () => {
           <p>So welcome to wabya, and join us as we do our bit to make a better society. </p>
           <p>For everyone. </p>
           <p>Everywhere.</p>
-          <p><Link href="#"><a className="btn">learn more about coaching</a></Link></p>
+          <p><Link href="/coach-with-us"><a className="btn">learn more about coaching</a></Link></p>
 
         </div>
           </div>
 
         <div className="col-sm-6 right">
           <iframe src="https://www.youtube.com/embed/GpK8THC4KTM" title="discover what coaching can do for you" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          <figure className="about-fig"><img src="../images/shape-01.png" alt=""/></figure>
+          {/* <figure className="about-fig"><img src="../images/shape-01.png" alt=""/></figure> */}
 
           </div>
 
@@ -54,8 +54,8 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Co-founder"  />
                 </figure>
-                <h4>JF</h4>
-                <span>Co-Founder</span>
+                <h4>jf</h4>
+                <span>co-founder</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
               </div>
@@ -64,30 +64,30 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Co-founder"  />
                 </figure>
-                <h4>Craig</h4>
-                <span>Co-Founder</span>
+                <h4>craig</h4>
+                <span>co-founder</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
               </div>
-              
+
               <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Head of Collaboration"  />
                 </figure>
-                <h4>Martin</h4>
-                <span>Head of Collaboration</span>
+                <h4>martin</h4>
+                <span>head of collaboration</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
               </div>
-              
+
               <div class="col-sm-3">
               <div className="meet-client-box">
                 <figure>
                   <img src="../../../../images/clients-01.png" alt="Chief People Officer"  />
                 </figure>
-                <h4>Ciara</h4>
-                <span>Chief People Officer</span>
+                <h4>ciara</h4>
+                <span>chief people officer</span>
                 <p>Lorem ipsum dolor sit amet, consectetuer</p>
               </div>
               </div>
