@@ -1,6 +1,21 @@
 import Link from "next/link"
+import { useState } from "react";
 
 const CoachWithUs = () => {
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown2, setShowDropdown2] = useState(false);
+  const [showDropdown3, setShowDropdown3] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+  const handleDropdownToggle2 = () => {
+    setShowDropdown2(!showDropdown2);
+  };
+  const handleDropdownToggle3 = () => {
+    setShowDropdown3(!showDropdown3);
+  };
 
   return(
 
@@ -116,24 +131,25 @@ const CoachWithUs = () => {
               <div className="session-grid">
               <div className="dropdown">
                 <div className="inner">
-                <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">novice <span><small>per session</small> £ 20</span></button>
-                <div className="dropdown-menu"><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
+                <button className={`btn dropdown-toggle ${showDropdown ? "show" : ""}`} type="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={handleDropdownToggle}>novice <span><small>per session</small> £ 20</span></button>
+                <div className={`dropdown-menu ${showDropdown ? "show" : ""}`}><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
               </div>
               </div>
 
               <div className="dropdown">
                 <div className="inner">
-                <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">experienced <span><small>per session</small> £ 50</span></button>
-                <div className="dropdown-menu"><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
+                <button className={`btn dropdown-toggle ${showDropdown2 ? "show" : ""}`} type="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={handleDropdownToggle2}>experienced <span><small>per session</small> £ 50</span></button>
+                <div className={`dropdown-menu ${showDropdown2 ? "show" : ""}`}><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
               </div>
               </div>
 
               <div className="dropdown">
                 <div className="inner">
-                <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">probono <span>
+                <button className={`btn dropdown-toggle ${showDropdown3 ? "show" : ""}`} type="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={handleDropdownToggle3}>probono <span>
+                  {/* <small>free of charge sessions</small> */}
                   <Link href='/client/login' passHref><a className="text-white"><small>client attestation</small></a></Link>
                   </span></button>
-                <div className="dropdown-menu"><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
+                <div className={`dropdown-menu ${showDropdown3 ? "show" : ""}`}><p>you’re newly or recently certified but have not reached your ICF ACC level (or AC / EMCC equivalent). You will make £20 per 45 minute coaching session.</p></div>
               </div>
               </div>
 
