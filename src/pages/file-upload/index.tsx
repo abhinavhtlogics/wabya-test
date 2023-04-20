@@ -145,6 +145,13 @@ const FileUpload = () => {
        //const fileRef = storageRef.child('files/' + file.name);
        setshowpercent(true);
        let randomString = '';
+
+          const randomNum = Math.floor(Math.random() * 1000);
+
+  // Convert the number to a string and pad it with leading zeros if necessary
+  const randomNumber = randomNum.toString().padStart(3, '0');
+  console.log(randomNumber);
+       randomString +=randomNumber;
   
        // Generate three random letters
        for (let i = 0; i < 3; i++) {
@@ -154,12 +161,7 @@ const FileUpload = () => {
          console.log(randomLetter);
        }
 
-       const randomNum = Math.floor(Math.random() * 1000);
-
-  // Convert the number to a string and pad it with leading zeros if necessary
-  const randomNumber = randomNum.toString().padStart(3, '0');
-  console.log(randomNumber);
-       randomString +=randomNumber;
+    
 
        const uniqueId = new Date().getTime();
        console.log(uniqueId);
