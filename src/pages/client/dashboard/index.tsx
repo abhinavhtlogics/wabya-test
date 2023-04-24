@@ -424,6 +424,10 @@ setmysSession(session);
   const [userId, setUserId] = useState();
   const [meeting, setMeeting] = useState([]);
 
+  const [meetingByDate, setMeetingByDate] = useState([]);
+
+  const [allFiles, setAllFiles] = useState([]);
+
   useEffect(() => {
     let userId = sessionStorage.getItem("userId");
     setUserId(userId);
@@ -475,6 +479,26 @@ setmysSession(session);
     });
   };
 
+
+
+
+
+
+  // get all meeting data
+  const getMeetingByDate = async (todayDate: string) => {
+    const userId = sessionStorage.getItem("userId");
+
+    const queryDoc = query(meetingRef, where("coachId", "==", coachesFirebaseId),where("meetingDate", "==", todayDate));
+
+    await getDocs(queryDoc).then((response) => {
+      setMeetingByDate(
+        response.docs.map((data) => {
+          return { ...data.data(), meeting_id: data.id };
+        })
+      );
+    });
+  };
+
   useEffect(() => {
     if (BookedId) {
       getBookingId();
@@ -493,6 +517,7 @@ setmysSession(session);
       //setcoachesCalUsername(client.assign_coach_uname);
       
       setcoachesFirebaseId(client.assign_coach_id);
+      getFiles();
     }
 
    
@@ -502,6 +527,24 @@ setmysSession(session);
     //     }
   }, [client]);
 
+
+
+  const getFiles = async () => {
+    const meetRef = collection(database, "resources");
+    const queryDoc = query(meetRef, where("parentId", "==", coachesFirebaseId));
+  
+    await getDocs(queryDoc).then((response) => {
+      console.log(response.docs);
+      setAllFiles(
+        response.docs.map((data) => {
+          return { ...data.data(), file_id: data.id };
+        })
+      );
+     
+      console.log(allFiles);
+     // setshowfile(true);
+    });
+  };
   
 
   const handleTimeClick = (event: any) => {
@@ -647,6 +690,10 @@ setmysSession(session);
     tomorrow.setDate(date.getDate() + 1);
     var todayDate = new Date(tomorrow).toISOString().slice(0, 10);
 
+    console.log(todayDate);
+
+    getMeetingByDate(todayDate);
+
     setmeetingdate(todayDate);
 
     var startTime = "";
@@ -663,21 +710,7 @@ setmysSession(session);
     var included = 1;
     setarray1([]);
 
-    var starttime = "09:00:00";
-var interval = "90";
-var endtime = "17:00:00";
-var timeslots = [starttime];
-
-
-while (starttime < endtime) {
-
-  starttime = addMinutes(starttime, interval);
-  timeslots.push(starttime);
-
-}
-
-setarray1(timeslots);
-
+   
 
       // //console.log(res);
       //console.log(data);
@@ -703,10 +736,48 @@ setarray1(timeslots);
     }
   }, [meeting]);
 
+
+  useEffect(() => {
+   
+ var starttime = "09:00:00";
+var interval = "90";
+var endtime = "17:00:00";
+var timeslots = [starttime];
+
+console.log(meetingByDate);
+
+while (starttime < endtime) {
+
+  starttime = addMinutes(starttime, interval); 
+
+  if(!isReserved(starttime)){
+  timeslots.push(starttime);
+  }
+  settimeslot_load(false);
+}
+
+setarray1(timeslots);
+
+
+  }, [meetingByDate]);
+
   if(!client){
     return <div><img src={`${router.basePath}/images/loading.gif`} style={{ display:"block", margin:"0px auto"}} /></div>;
   }
 
+
+  function isReserved(time) {
+    // assume reserved times are stored in an array called 'reservedTimes'
+    for (let i = 0; i < meetingByDate.length; i++) {
+      if (time === meetingByDate[i].meetingTime) {
+        // if the time slot is reserved, return true
+        return true;
+      }
+    }
+    // if the time slot is not reserved, return false
+    return false;
+  }
+  
   return (
     <section className="client-dashboard">
       <div className="container">
@@ -1489,17 +1560,16 @@ setarray1(timeslots);
                   </div>
                 </div>
 
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
+                {allFiles.map((myfile, index) => {
+             return (
+            
+          <div className="col-sm-4 fi-coll">
+              <a href={myfile.resourceURL} target='_blank'>
+            <div className="inner">
+             
+              <figure><img src="../../images/file-icon.jpg" alt=""/></figure>
+            <h4>{myfile.fileName} <span>{myfile.uploadDate}</span></h4>
+            <div className="download-right">
                       <figure>
                         <img
                           src="../../images/download.png"
@@ -1512,376 +1582,17 @@ setarray1(timeslots);
                         <div className="divider-bottom"></div>
                       </div> */}
                     </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
+              </div></a>
+            </div>
 
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
+             );
+          })
+        }
+         
 
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-4 fi-coll">
-                  <div className="inner">
-                    <div className="download-left">
-                      <figure>
-                        <img src="../../images/file-icon.jpg" alt="" />
-                      </figure>
-                      <h4>
-                        File Name <span>Date Shared</span>
-                      </h4>
-                    </div>
-                    <div className="download-right">
-                      <figure>
-                        <img
-                          src="../../images/download.png"
-                          alt=""
-                          className="download-file"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div>
+               
+               
+            
               </div>
             </div>
           </div>
