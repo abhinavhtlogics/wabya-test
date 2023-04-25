@@ -13,6 +13,8 @@ const ViewBasic = () => {
   const [clientData, setClientData] = useState(null);
   const [coachData, setCoachData] = useState(null);
 
+  const [planData, setPlanData] = useState(null);
+
   // get single client data
   useEffect(() => {
     const getClientData = async () => {
@@ -33,14 +35,31 @@ const ViewBasic = () => {
               const coachData = coachDoc.data();
               setCoachData(coachData);
             }
+
+
+
+            const planRef = doc(collection(database,'admin_plans'),clientData.plan_id);
+            const planDoc = await getDoc(planRef);
+
+            if (coachDoc.exists()) {
+              const planData = planDoc.data();
+
+              console.log(planData);
+              setPlanData(planData);
+            }
           }
         }
       }catch (error) {
-        console.log(error);
+        console.log(error); 
       }
     };
     getClientData();
   }, [router.query.client_id]);
+
+
+
+    
+
 
   return (
 
@@ -64,7 +83,7 @@ const ViewBasic = () => {
         <p>Assign Coach: <span>{!coachData ? null : coachData.coach_name}</span></p>
         <p>Email: <span><a href="mailto:name@gmail.com">{!clientData ? null : clientData.client_email}</a></span></p>
         <p>Time Zone: <span>{!clientData ? null : clientData.client_zone }</span></p>
-        <p>Current Package <span>Pay as you go</span></p>
+        <p>Current Package <span>{!planData ? null : planData.plan_name}</span></p>
         <p>Last Session: <span>10 November 2023</span></p>
         <p>Completed Sessions: <span>00</span></p>
         <p>Next Sessions: <span>Thursday</span><span>10 November 2023</span><span>09:30</span></p>

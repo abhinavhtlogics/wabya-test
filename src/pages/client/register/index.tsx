@@ -110,6 +110,7 @@ const RegisterPage = () => {
             client_uname : String(), 
             client_uid : Number(),
             assign_coach_id:coachData[randomNo].coach_id,
+            plan_id:planData[0].plan_id,
            
           })
             .then(() => {
@@ -137,7 +138,9 @@ console.log(
 const clientRef = collection(database, 'client_user');
 
 const coachRef = collection(database, 'coaches_user');
+const planRef = collection(database, 'admin_plans');
 const [coachData, setCoachData] = useState([]);
+const [planData, setplanData] = useState([]);
 
 const [randomNo, setrandomNo] = useState(0);
 
@@ -157,6 +160,22 @@ console.log('test');
   }
 
 
+    // coach data fetch
+    const getAllPlans = async () => {
+      console.log('testsss');
+          const queryDoc = query(planRef,where('status', '==', '1'));
+      
+          await getDocs(queryDoc).then(response => {
+            console.log(response.docs.length);
+            setplanData(
+              response.docs.map(data => {
+                return { ...data.data(), plan_id: data.id }
+              })
+            )
+          })
+        }
+      
+
    // coach data fetch
    const countData = async (client_em:string) => {
     console.log('test');
@@ -173,7 +192,7 @@ console.log('test');
 
     getCoachData();
 
-    
+    getAllPlans();
 
 
   }, [])

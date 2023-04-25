@@ -19,41 +19,56 @@ import { ConsoleNetworkOutline } from 'mdi-material-ui';
 
 const ClientDetail = () => {
 
-  const router = useRouter()
- // const [idd,setIdd] = useState(router.query.id);
-
-  //setIdd(""+router.query+"");
-
-  //const clientRef = collection(database, "client_user")
- // const itemRef = doc(collection(database, "client_user"), idd);
-
-  const [CDetail, setCDetail] = useState([]);
-
-   // get all meeting data
   
-  
- useEffect(() => {
-    const getClientDetail = async () => {
-      try {
-        if (router.query.id !== undefined) { // check if coach_id is defined
-          const itemRef = doc(collection(database, "client_user"), router.query.id);
-    await getDoc(itemRef).then((response) => {
-      setCDetail(response.data());
-      console.log(response.data());
-    });
-  }
-      }
-       catch (error) {
-        console.log(error);
-      }
-   
-    };
-  }, [router.query.id]);
-  
-  
+  const router = useRouter();
+  const [clientData, setClientData] = useState(null);
+  const [coachData, setCoachData] = useState(null);
+
+  const [planData, setPlanData] = useState(null);
+
+  // get single client data
   useEffect(() => {
-    console.log(CDetail);
-  }, [CDetail]);
+    const getClientData = async () => {
+      try{
+
+        console.log(router.query)
+        if (router.query.id !== undefined) {
+
+          const clientRef = doc(collection(database,"client_user"),router.query.id );
+          const clientDoc = await getDoc(clientRef);
+
+          if (clientDoc.exists()) {
+            const clientData = clientDoc.data();
+            setClientData(clientData);
+
+            const coachRef = doc(collection(database,'coaches_user'),clientData.assign_coach_id);
+            const coachDoc = await getDoc(coachRef);
+
+            if (coachDoc.exists()) {
+              const coachData = coachDoc.data();
+              setCoachData(coachData);
+            }
+
+
+
+            const planRef = doc(collection(database,'admin_plans'),clientData.plan_id);
+            const planDoc = await getDoc(planRef);
+
+            if (coachDoc.exists()) {
+              const planData = planDoc.data();
+
+              console.log(planData);
+              setPlanData(planData);
+            }
+          }
+        }
+      }catch (error) {
+        console.log(error); 
+      }
+    };
+    getClientData();
+  }, [router.query.client_id]);
+
 
   return (
 
@@ -64,7 +79,7 @@ const ClientDetail = () => {
         <div className="col-sm-12 top">
           <div className="inner-info">
             <figure><img src={`${router.basePath}/images/clients-01.png`} alt=""/></figure>
-            <h2> {!CDetail ? null : CDetail.client_name} <span>Private</span></h2>
+            <h2> {!clientData ? null : clientData.client_name} <span>Private</span></h2>
           <div className="right-area">
             <p><a href="#" className="btn">Start Call</a></p>
             <p><Link href='/client-resources' passHref><a className="btn btn-resources">Resources</a></Link></p>
@@ -74,9 +89,9 @@ const ClientDetail = () => {
 
         <div className="col-sm-4 left mrb-30">
           <div className="info-grid">
-          <p>Contact Details: <span><a href="mailto:name@gmail.com">{!CDetail ? null : CDetail.client_email}</a></span></p>
-          <p>Time Zone: <span>{!CDetail ? null : CDetail.client_zone }</span></p>
-          <p>Current Package <span>Pay as you go</span></p>
+          <p>Contact Details: <span><a href="mailto:name@gmail.com">{!clientData ? null : clientData.client_email}</a></span></p>
+          <p>Time Zone: <span>{!clientData ? null : clientData.client_zone }</span></p>
+          <p>Current Package <span>{!planData ? null : planData.plan_name }</span></p>
           <p>Last Session: <span>10 November 2023</span></p>
           <p>Completed Sessions: <span>00</span></p>
           <p>Next Sessions: <span>Thursday</span><span>10 November 2023</span><span>09:30</span></p>

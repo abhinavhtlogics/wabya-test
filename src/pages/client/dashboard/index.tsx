@@ -1256,12 +1256,16 @@ setarray1(timeslots);
                     </tr>
 
                     {meeting.map((data) => {
+
+                      if (new Date(data.meetingDate).getTime() > new Date().getTime() )
                       return (
                         <>
                           <tr className="table-pad">
                             {/* <td>{data.coach_name}</td> */}
                             <td>
                               {new Date(data.meetingDate).toLocaleDateString()}
+
+                              
                             </td>
                             <td>
                               <Link
