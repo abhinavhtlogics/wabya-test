@@ -51,6 +51,8 @@ const EditCoachPassword = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [coachId, setCoachId] = useState('');
+  const [new_pass_type, set_new_pass_type] = useState(false);
+  
 
   useEffect(() => {
 
@@ -122,6 +124,8 @@ const EditCoachPassword = () => {
                         <input type="password" name="current_pass" id="current_pass" className='form-control' onClick={(e) => handleClick(e)} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} /> <span id="dummy1" onClick={(e) => handleClick(e)}></span>
                         <span id="result1">Result is : </span>
                     </div>
+
+                 
                   </div>
                   <div className="row">
                     <div className="col-sm-6">
@@ -129,8 +133,12 @@ const EditCoachPassword = () => {
                     </div>
                     <div className="col-sm-6">
                         <input type="password" name="new_pass" id="new_pass" className='form-control' onClick={(e) => handleClick(e)} value={newPassword} onChange={e => setNewPassword(e.target.value)} /> <span id="dummy2" onClick={(e) => handleClick(e)}></span>
+                       
                         <span id="result2">Result is : </span>
-                    </div>
+
+                              </div>
+
+                                    
                   </div>
                   <div className="row">
                     <div className="col-sm-6">
@@ -140,10 +148,11 @@ const EditCoachPassword = () => {
                         <input type="password" name="confirm_pass" id="confirm_pass" className='form-control' onClick={(e) => handleClick(e)} value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} /> <span id="dummy3" onClick={(e) => handleClick(e)}></span>
                         <span id="result3">Result is : </span>
                     </div>
+                   
                   </div>
                   <div className="row">
                     <div className="col-sm-12">
-                      <input type="submit" value="save" className='btn btn-save' onClick={handleChangePassword} />
+                      <input type="submit" value="Save" className='btn btn-save' onClick={handleChangePassword} />
                     </div>
                     <div className="col-sm-12">
                       {errorMessage && <Alert message={errorMessage} className='mt-4' type="success"/> }

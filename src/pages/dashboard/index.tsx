@@ -82,7 +82,7 @@ const Dashboard = () => {
 
                     <div className="col-sm-4 left mrb-30">
                       <div className="info-grid">
-                      <p>Information</p>
+                      {/* <p>Information</p> */}
                       <p>Contact Details: <span><a href={`mailto:${coach.coach_email}`}>{coach.coach_email}</a></span></p>
                       <p>Time Zone: <span>{coach.coach_timezone}</span></p>
                       <p>Languages: <span>{coach.coach_language}</span></p>

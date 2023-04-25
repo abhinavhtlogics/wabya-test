@@ -1257,7 +1257,13 @@ setarray1(timeslots);
 
                     {meeting.map((data) => {
 
-                      if (new Date(data.meetingDate).getTime() > new Date().getTime() )
+
+
+
+
+
+
+            if (new Date(data.meetingDate).toLocaleDateString() == new Date().toLocaleDateString() )
                       return (
                         <>
                           <tr className="table-pad">
@@ -1272,8 +1278,9 @@ setarray1(timeslots);
                                 passHref
                                 href={`videocall/${data.meetingName}`}
                                 target="_blank"
+                               
                               >
-                                <a className="btn">Join Video</a>
+                                <a className="btn btn-coach">Join Video</a>
                               </Link>
                             </td>
                             <td>
@@ -1281,6 +1288,7 @@ setarray1(timeslots);
                                 className="btn btn-schedule"
                                 data-id={data.meeting_id}
                                 onClick={scheduleReSes}
+                              
                               >
                                 reschedule
                               </button>
@@ -1288,6 +1296,63 @@ setarray1(timeslots);
                           </tr>
                         </>
                       );
+
+
+
+
+
+
+
+
+
+
+
+                      if (new Date(data.meetingDate).getTime() > new Date().getTime() )
+                      return (
+                        <>
+                          <tr className="table-pad">
+                            {/* <td>{data.coach_name}</td> */}
+                            <td>
+                              {new Date(data.meetingDate).toLocaleDateString()}
+
+                              
+                            </td>
+                            <td>
+                              <Link
+                                passHref
+                                href="#"
+                                
+                               
+                              >
+                                <a className="btn">Join Video</a>
+                              </Link>
+                            </td>
+                            <td>
+                           
+                              <button
+                                className="btn btn-schedule"
+                                data-id={data.meeting_id}
+                                onClick={scheduleReSes}
+                              
+                              >
+                                reschedule
+                              </button>
+                            </td>
+                          </tr>
+                        </>
+                      );
+
+
+                     
+
+
+
+
+
+
+
+
+
                     })}
                   </tbody>
                 </table>

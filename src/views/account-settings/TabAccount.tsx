@@ -249,7 +249,7 @@ const TabAccount = () => {
                 </ButtonStyled>
 
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
-                  Allowed PNG or JPEG. Max size of 800K.
+                PNG or JPEG. Max 800KB.
                 </Typography>
               </Box>
             </Box>
