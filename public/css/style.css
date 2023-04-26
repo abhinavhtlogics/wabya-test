@@ -2395,3 +2395,7 @@ position: relative;
 
 }
 
+.timesheet-carousel .owl-item div {
+  
+  text-align: center !important;
+}
