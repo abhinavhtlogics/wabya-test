@@ -1441,6 +1441,8 @@ span.pass-eye {
   border-radius: 20px;
   margin-bottom: 20px;
   border: 1px solid #0f2540;
+  caret-color: #0f2540 !important;
+    letter-spacing: 3px;
 }
 .client-password .form-password span#dummy1 {
   position: absolute;
@@ -2378,3 +2380,18 @@ img.tree-image {
   .banner::after{height: 600px; width: 630px; top: 8%;}
 
 }
+
+
+
+.cal-item::after{
+  position: absolute;
+      right: 0;
+  
+  }
+
+.cal-item{
+position: relative;
+    text-align: center;
+
+}
+
