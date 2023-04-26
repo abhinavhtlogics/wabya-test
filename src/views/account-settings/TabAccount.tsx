@@ -109,11 +109,12 @@ const TabAccount = () => {
 
       const editAdmin = async () => {
 
+       
         const coachIds = sessionStorage.getItem('coachId');
         const userCollection = collection(database, 'coaches_user');
         const userDocRef = doc(userCollection, coachIds);
         const userDoc = await getDoc(userDocRef);
-
+        console.log(userDoc.data());
         setName(userDoc.data().coach_name),
         setEmail(userDoc.data().coach_email),
         setPhone(userDoc.data().coach_phone),
@@ -121,8 +122,9 @@ const TabAccount = () => {
         setLanguage(userDoc.data().coach_language),
         setTimeZone(userDoc.data().coach_timezone),
         setBio(userDoc.data().coach_bio),
-        setAbout(userDoc.data().coach_about)
-        setImage(userDoc.data().coach_profile)
+        setAbout(userDoc.data().coach_about),
+        setImage(userDoc.data().coach_profile),
+        setfileUrl(userDoc.data().coach_profile)
       };
       editAdmin();
 

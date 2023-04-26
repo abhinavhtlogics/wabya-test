@@ -6,16 +6,18 @@ import { ReactNode, useState, useEffect,useCallback } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import firebase from 'firebase/app';
-import { database,storage } from '../../../firebaseConfig'
-import {ref,
-    uploadBytesResumable,
-    getDownloadURL } from "firebase/storage"
-import { collection, query, where, getDocs,addDoc } from 'firebase/firestore';
+// firebase config
+import { database, storage } from '../../../firebaseConfig'
+import { collection, doc, updateDoc, getDoc,query,where,getDocs } from 'firebase/firestore'
+import { useFormik } from 'formik';
+import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+
+
 import { Modal } from "antd";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Alert } from 'antd'
+import { event } from 'jquery';
 
 const Resources = () => {
 
@@ -63,10 +65,42 @@ useEffect(() => {
  
   const [murl, setmurl] = useState('https://abhinav19.daily.co/n8qwqVewdGXwVk9dNDzg');
 
+  const [SearchVal, setSearchVal] = useState('');
+  const [userProfile, setUserProfile] = useState('');
+
+
+  useEffect(() => {
+    console.log('testtt');
+  
+    const editAdmin = async () => {
+  
+     console.log('testtt');
+      const coachIds = sessionStorage.getItem('coachId');
+      const userCollection = collection(database, 'coaches_user');
+      const userDocRef = doc(userCollection, coachIds);
+      const userDoc = await getDoc(userDocRef);
+      console.log(userDoc.data());
+      setUserProfile(userDoc.data().coach_profile)
+      
+    
+    
+    }
+    editAdmin();
+  }, []);
+  
+
   function handleFileChange(event) {
     console.log('test');
     setFile(event.target.files[0]);
 //handleSubmit();
+  }
+
+
+  function handleSearch(event) {
+    console.log(event.target);
+   setSearchVal(event.target.value);
+//handleSubmit();
+
   }
 
   function handleSubmit() {
@@ -185,8 +219,8 @@ const year = today.getFullYear();
         <div className="row">
 
         <div className="col-sm-2 left mrb-30">
-          <figure><img src="https://firebasestorage.googleapis.com/v0/b/wabya-45dba.appspot.com/o/coach%2Fprofile%2FJF%20small.jpg?alt=media&token=355995a3-3064-45bd-add5-98ccc77227d6" alt=""/></figure>
-        </div> {/* <!--/ left --> */}
+          <figure><img src={userProfile} alt=""/></figure>
+        </div> 
 
         <div className="col-sm-10 right mrb-30">
           <h2>My Resources</h2>
@@ -205,23 +239,25 @@ const year = today.getFullYear();
                     
                     <div className="col-sm-6">
                     
-                    <label  className="custom-file-upload">
+                    {/* <label  className="custom-file-upload">
     <i className="fa fa-cloud-upload"></i> choose File
     <input id="file-upload" type="file" onChange={handleFileChange}/>
-</label>
+</label> */}
+<input  type="file" onChange={handleFileChange} className='btn btn-primary' style={{width:'100%'}}/>
 
 
-{ showpercent ?
-    percent  : null}
-    { showpercent ?
-    "%"  : null}
 
 
                        
                     </div>
 
                     <div className="col-sm-6">
-                      <input type="submit" value="save" className='btn btn-save' onClick={handleSubmit} />
+
+                    { showpercent ?
+    percent  : null}
+    { showpercent ?
+    "%"  : null}
+                      <input type="submit" value="SAVE" className='btn btn-save' onClick={handleSubmit} />
                     </div>
 
                     
@@ -263,17 +299,24 @@ const year = today.getFullYear();
             <div className="product_search_form">
               <form id="searchForm" action="" method="POST">
 
-                <input type="text" name="keyword" id="keyword" className="form-control"  placeholder="search"/>
+                <input type="text" name="keyword" id="keyword" className="form-control"  placeholder="search" onKeyUp={handleSearch}/>
                 <input className="btn btn-search" type="submit"/>
-                <i className="fa fa-fw fa-search" title="search" aria-hidden="true"></i>
+                <i className="fa fa-fw fa-search" title="search" aria-hidden="true" ></i>
               </form>
 				    </div>
           </div>
 
           {allFiles.map((myfile, index) => {
-             return (
+
             
+
+             return (
+
+              myfile.fileName.toLowerCase().indexOf(SearchVal.toLowerCase()) !== -1
+               ? 
+        
           <div className="col-sm-4 fi-coll">
+            
               <a href={myfile.resourceURL} target='_blank'>
             <div className="inner">
              
@@ -282,8 +325,10 @@ const year = today.getFullYear();
             
               </div></a>
             </div>
+            :null
 
              );
+            
           })
         }
          

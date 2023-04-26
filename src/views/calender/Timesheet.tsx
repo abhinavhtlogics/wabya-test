@@ -39,7 +39,7 @@ const Timesheet = () => {
             <div className='timesheet-buttons'>
               <div className='row'>
                 <div className='col-sm-12'>
-                  <button className='btn btn-one'>Pay as you goal</button>
+                  <button className='btn btn-one'>PAYG</button>
                   <button className='btn btn-two'>Bundle</button>
                   <button className='btn btn-three'>Probono</button>
                 </div>

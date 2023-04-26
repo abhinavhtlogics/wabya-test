@@ -2,8 +2,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { database } from '../../../firebaseConfig'
-import { collection, getDoc, doc } from 'firebase/firestore'
+// firebase config
+import { database, storage } from '../../../firebaseConfig'
+import { collection, doc, updateDoc, getDoc } from 'firebase/firestore'
+import { useFormik } from 'formik';
+import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 
 
 // ** MUI Components
@@ -14,6 +17,8 @@ const Dashboard = () => {
   const router = useRouter()
   const [coach, setCoach] = useState(null);
   const [coachId,setCoachId]=useState();
+
+  const [accept_new_client,setAcceptNewUser]=useState(0);
 
   useEffect(() => {
 
@@ -41,6 +46,56 @@ const Dashboard = () => {
 }, [coachId])
 
 
+const handleChange = async () =>{
+  console.log(accept_new_client);
+  let a=0;
+
+  if(accept_new_client == 0){
+    setAcceptNewUser(1);
+    a=1;
+  }
+  else{
+    setAcceptNewUser(0);
+    a=0;
+  }
+
+  
+ 
+
+
+  const coachIds = sessionStorage.getItem('coachId');
+  const userDocRef = doc(collection(database, 'coaches_user'), coachIds);
+
+  const updatedData = {
+    accept_new_client:a
+  };
+  await updateDoc(userDocRef, updatedData);
+  editAdmin();
+  
+}
+
+
+useEffect(() => {
+  console.log('testtt');
+
+  const editAdmin = async () => {
+
+   console.log('testtt');
+    const coachIds = sessionStorage.getItem('coachId');
+    const userCollection = collection(database, 'coaches_user');
+    const userDocRef = doc(userCollection, coachIds);
+    const userDoc = await getDoc(userDocRef);
+    console.log(userDoc.data());
+    setAcceptNewUser(userDoc.data().accept_new_client)
+    
+  
+  
+  }
+  editAdmin();
+}, []);
+
+
+
   return (
     <>
     {
@@ -61,8 +116,11 @@ const Dashboard = () => {
                         <div className="accepting-info">
                         <span>Accepting New Clients</span>
                             <label className="switch">
+
+                              { accept_new_client == 0 ?
                       <input className="switch-input" type="checkbox" />
-                      <span className="switch-label" data-on="Yes" data-off="No"></span>
+                      :  <input className="switch-input" type="checkbox" checked /> }
+                      <span className="switch-label" data-on="Yes" data-off="No" onClick={handleChange}></span>
                       <span className="switch-handle"></span>
                     </label>
                       </div>

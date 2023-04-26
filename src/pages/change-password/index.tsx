@@ -111,7 +111,7 @@ const EditCoachPassword = () => {
       <div className="container">
         <div className="row">
           <div className="col-sm-12">
-            <h3>edit my password:</h3>
+            {/* <h3>edit my password:</h3> */}
             <div className="row">
               <div className="col-sm-7">
                 <div className='inner-info'>

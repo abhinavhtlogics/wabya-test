@@ -175,8 +175,8 @@ const Header = () => {
 
                   <div className='collapse navbar-collapse' id='navbarSupportedContent'>
                     <ul className='navbar-nav'>
-                      <li className={router.pathname == "/calender" ? "active" : ""}>
-                        <Link href='/calender' passHref>
+                      <li className={router.pathname == "/calendar" ? "active" : ""}>
+                        <Link href='/calendar' passHref>
                           <a>Calendar</a>
                         </Link>
                       </li>
