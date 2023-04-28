@@ -330,7 +330,7 @@ const Timesheet = () => {
             <div className='timesheet-buttons'>
               <div className='row'>
                 <div className='col-sm-12'>
-                  <button className='btn btn-two'>view past payslips</button>
+                  <button className='btn btn-five'>view past payslips</button>
                   <button className='btn btn-four'>query my timesheet</button>
                 </div>
               </div>

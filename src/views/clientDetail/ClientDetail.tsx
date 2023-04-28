@@ -81,7 +81,7 @@ const ClientDetail = () => {
             <figure><img src={`${router.basePath}/images/clients-01.png`} alt=""/></figure>
             <h2> {!clientData ? null : clientData.client_name} <span>Private</span></h2>
           <div className="right-area">
-            <p><a href="#" className="btn">Start Call</a></p>
+            <p><a href="#" className="btn">Join Call</a></p>
             <p><Link href='/client-resources' passHref><a className="btn btn-resources">Resources</a></Link></p>
           </div>
           </div>
@@ -89,12 +89,12 @@ const ClientDetail = () => {
 
         <div className="col-sm-4 left mrb-30">
           <div className="info-grid">
-          <p>Contact Details: <span><a href="mailto:name@gmail.com">{!clientData ? null : clientData.client_email}</a></span></p>
-          <p>Time Zone: <span>{!clientData ? null : clientData.client_zone }</span></p>
-          <p>Current Package <span>{!planData ? null : planData.plan_name }</span></p>
-          <p>Last Session: <span>10 November 2023</span></p>
-          <p>Completed Sessions: <span>00</span></p>
-          <p>Next Sessions: <span>Thursday</span><span>10 November 2023</span><span>09:30</span></p>
+          <p>Contact details <span><a href="mailto:name@gmail.com">{!clientData ? null : clientData.client_email}</a></span></p>
+          <p>Time zone <span>{!clientData ? null : clientData.client_zone }</span></p>
+          <p>Current package <span>{!planData ? null : planData.plan_name }</span></p>
+          <p>Last session <span>10 November 2023</span></p>
+          <p>Completed sessions <span>00</span></p>
+          <p>Next sessions <span>Thursday</span><span>10 November 2023</span><span>09:30</span></p>
           </div>
         </div>
 

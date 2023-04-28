@@ -2399,3 +2399,12 @@ position: relative;
   
   text-align: center !important;
 }
+
+
+.user-profile .right-area .btn-green:after{
+  color: white !important;
+}
+
+.btn-green{
+  background-color: green !important;
+}

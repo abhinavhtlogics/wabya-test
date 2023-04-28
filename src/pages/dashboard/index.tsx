@@ -70,7 +70,7 @@ const handleChange = async () =>{
     accept_new_client:a
   };
   await updateDoc(userDocRef, updatedData);
-  editAdmin();
+ // editAdmin();
   
 }
 
@@ -115,14 +115,39 @@ useEffect(() => {
                       <div className="right-area">
                         <div className="accepting-info">
                         <span>Accepting New Clients</span>
-                            <label className="switch">
+                        <label className="switch">
+  <input
+    className="switch-input"
+    type="checkbox"
+    
+    checked={accept_new_client !== 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setAcceptNewUser(1);
 
-                              { accept_new_client == 0 ?
-                      <input className="switch-input" type="checkbox" />
-                      :  <input className="switch-input" type="checkbox" checked /> }
-                      <span className="switch-label" data-on="Yes" data-off="No" onClick={handleChange}></span>
-                      <span className="switch-handle"></span>
-                    </label>
+        const coachIds = sessionStorage.getItem('coachId');
+  const userDocRef = doc(collection(database, 'coaches_user'), coachIds);
+
+  const updatedData = {
+    accept_new_client:1
+  };
+  updateDoc(userDocRef, updatedData);
+      } else {
+        setAcceptNewUser(0);
+        const coachIds = sessionStorage.getItem('coachId');
+        const userDocRef = doc(collection(database, 'coaches_user'), coachIds);
+      
+        const updatedData = {
+          accept_new_client:0
+        };
+        updateDoc(userDocRef, updatedData);
+      }
+    }}
+  />
+  <span className={`switch-label  ${accept_new_client !== 0 ? 'btn-green' : 'btn-blue'}`} data-on="Yes" data-off="No"></span>
+  <span className="switch-handle"></span>
+</label>
+
                       </div>
 
                       <div className="dropdown">
@@ -141,9 +166,9 @@ useEffect(() => {
                     <div className="col-sm-4 left mrb-30">
                       <div className="info-grid">
                       {/* <p>Information</p> */}
-                      <p>Contact Details: <span><a href={`mailto:${coach.coach_email}`}>{coach.coach_email}</a></span></p>
-                      <p>Time Zone: <span>{coach.coach_timezone}</span></p>
-                      <p>Languages: <span>{coach.coach_language}</span></p>
+                      <p>Contact details <span><a href={`mailto:${coach.coach_email}`}>{coach.coach_email}</a></span></p>
+                      <p>Time zone <span>{coach.coach_timezone}</span></p>
+                      <p>Languages <span>{coach.coach_language}</span></p>
 
                       </div>
                     </div> {/* <!--/ left --> */}
