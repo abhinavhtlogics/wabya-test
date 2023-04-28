@@ -2,7 +2,7 @@
 import { ReactNode, useState } from 'react'
 
 // ** Next Imports
-// import Link from 'next/link'
+import Link from 'next/link'
 
 // import header & footer files
 import Header from 'src/views/frontend/layouts/Header'
@@ -28,7 +28,7 @@ const CoachSessionBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <section className="journey-wrap">
       <div className="container">
         <div className="row mrb-70">
@@ -160,7 +160,9 @@ const CoachSessionBasic = () => {
 
             <div className="row">
               <div className="col-sm-12 bottom">
-                <p><button onClick={calDiv} className="btn">continue</button></p>
+                {/* <p><button onClick={calDiv} className="btn">continue</button></p> */}
+                <p><Link href="/pages/register" passHref><a className="btn">continue</a></Link></p>
+
               </div> {/* <!--/ col-sm --> */}
             </div> {/* <!--/ row --> */}
           </>
@@ -171,7 +173,7 @@ const CoachSessionBasic = () => {
 
       </div>
     </section> {/* <!--/ book a free coaching session  --> */}
-    <Footer/>
+
     </>
   )
 }

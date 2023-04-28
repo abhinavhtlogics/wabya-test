@@ -30,7 +30,7 @@ const Home = () => {
 
   return (
     <>
-    <Header/>
+
 
       <section className="banner" id="home">
         <div className="container">
@@ -163,7 +163,7 @@ const Home = () => {
         </div>
       </section>
 
-      <Footer/>
+
     </>
   )
 }

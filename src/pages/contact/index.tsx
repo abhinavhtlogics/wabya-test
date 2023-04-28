@@ -16,9 +16,9 @@ const ContactBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <Contact/>
-    <Footer/>
+
     </>
   )
 }

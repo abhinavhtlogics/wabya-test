@@ -21,7 +21,7 @@ const ApplyWabyaBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <section className="work-together">
       <div className="container">
         <div className="row align-items-center">
@@ -75,7 +75,7 @@ const ApplyWabyaBasic = () => {
         </div> {/* <!--/ row --> */}
       </div>
     </section> {/* <!--/ work-together --> */}
-    <Footer/>
+
     </>
   )
 }

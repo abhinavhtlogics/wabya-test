@@ -16,9 +16,9 @@ const AboutBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <About/>
-    <Footer/>
+
     </>
   )
 }

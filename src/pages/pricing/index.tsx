@@ -16,9 +16,9 @@ const PricingBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <Pricing/>
-    <Footer/>
+
     </>
   )
 }

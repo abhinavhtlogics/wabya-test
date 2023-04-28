@@ -16,9 +16,9 @@ const CoachWithUsBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <CoachWithUs/>
-    <Footer/>
+
     </>
   )
 }

@@ -16,9 +16,9 @@ const FaqBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <Faq/>
-    <Footer/>
+
     </>
   )
 }

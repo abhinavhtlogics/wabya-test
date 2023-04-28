@@ -16,9 +16,9 @@ const CoachingJourneyBasic = () => {
 
   return (
     <>
-    <Header/>
+
     <CoachingJourney/>
-    <Footer/>
+
     </>
   )
 }
