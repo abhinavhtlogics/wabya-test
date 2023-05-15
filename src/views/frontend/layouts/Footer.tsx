@@ -21,10 +21,10 @@ const Footer = () => {
                     <h4>about us</h4>
                     <ul>
                       <li>
-                        <Link href='#'>meet the team</Link>
+                        <Link href='/about/#meet-team'>meet the team</Link>
                       </li>
                       <li>
-                        <Link href='#'>mission & vision</Link>
+                        <Link href='/about/#mission'>mission & vision</Link>
                       </li>
                     </ul>
                   </div>
@@ -35,10 +35,10 @@ const Footer = () => {
                     <h4>coaching journey</h4>
                     <ul>
                       <li>
-                        <Link href='#'>this is coaching</Link>
+                        <Link href='/coaching-journey/#this-coaching'>this is coaching</Link>
                       </li>
                       <li>
-                        <Link href='#'>the coaching journey</Link>
+                        <Link href='/coaching-journey/#coaching-journey'>the coaching journey</Link>
                       </li>
                     </ul>
                   </div>
@@ -49,7 +49,7 @@ const Footer = () => {
                     <h4>pricing</h4>
                     <ul>
                       <li>
-                        <Link href='#'>pricing options</Link>
+                        <Link href='/pricing/#pricing-option'>pricing options</Link>
                       </li>
                     </ul>
                   </div>
@@ -60,10 +60,10 @@ const Footer = () => {
                     <h4>FAQ</h4>
                     <ul>
                       <li>
-                        <Link href='#'>privacy policy</Link>
+                        <Link href='/faq/#faq'>privacy policy</Link>
                       </li>
                       <li>
-                        <Link href='#'>terms & conditions</Link>
+                        <Link href='/faq/#faq'>terms & conditions</Link>
                       </li>
                     </ul>
                   </div>

@@ -35,7 +35,7 @@ const Pricing = () => {
     <>
 
 
-    <section className="pricing-wrap">
+    <section className="pricing-wrap" id="pricing-option">
         <div className="container">
           <div className="row">
 
@@ -141,7 +141,7 @@ const Pricing = () => {
                     <li> <img src='../images/shape-04.png' alt=''/> Pay as you go: <strong> £40</strong></li>
                     <li> <img src='../images/shape-04.png' alt=''/> Bundle: <strong> £210 for 6</strong> sessions</li>
               </ul>
-            <p className="btn-wrap"><Link href="#"><a className="btn">select</a></Link></p>
+            <p className="btn-wrap"><Link href="/client/register"><a className="btn">select</a></Link></p>
             </div>
           </div>
 
@@ -157,7 +157,7 @@ const Pricing = () => {
                     <li> <img src='../images/shape-04.png' alt=''/> Pay as you go: <strong> £65</strong></li>
                     <li> <img src='../images/shape-04.png' alt=''/> Bundle: <strong> £360 for 6</strong> sessions</li>
               </ul>
-            <p className="btn-wrap"><Link href="#"><a className="btn">select</a></Link></p>
+            <p className="btn-wrap"><Link href="/client/register"><a className="btn">select</a></Link></p>
             </div>
           </div>
 

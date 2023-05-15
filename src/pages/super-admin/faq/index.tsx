@@ -7,12 +7,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const AddPlan = () => {
+const AddFAQ = () => {
 
   const router = useRouter();
-  const databaseRef = collection(database, 'admin_plans');
+  const databaseRef = collection(database, 'faq');
   const [count, setCount] = useState(1);
-  const [plan_id, setID] = useState(null);
+  const [faq_id, setID] = useState(null);
   const [planName, setPlanName] = useState('');
   const [planDesc, setPlanDesc] = useState('');
   const [isUpdate, setIsUpdate] = useState(false);
@@ -20,6 +20,9 @@ const AddPlan = () => {
 
   const [payg_price, setPAYGPrice] = useState('');
   const [bundle_price, setBundlePrice] = useState('');
+
+  const [question, setquestion] = useState('');
+  const [answer, setanswer] = useState('');
 
   useEffect(() => {
     let token = sessionStorage.getItem('Token')
@@ -38,7 +41,7 @@ const AddPlan = () => {
     await getDocs(databaseRef)
       .then((response) => {
         setFireData(response.docs.map((data) => {
-          return { ...data.data(), plan_id: data.id }
+          return { ...data.data(), faq_id: data.id }
         }))
       })
   }
@@ -46,19 +49,15 @@ const AddPlan = () => {
   // add new record
   const addData = () => {
     addDoc(databaseRef, {
-      plan_name: planName,
-      plan_desc : planDesc,
-      bundle_price:bundle_price,
-      payg_price:payg_price,
-      status:'1'
+      question: question,
+      answer : answer
     })
       .then(() => {
         toast.success('Data sent successfully')
         getData()
-        setPlanName('')
-        setPlanDesc('')
-        setBundlePrice('')
-        setPAYGPrice('')
+        setquestion('')
+        setanswer('')
+       
       })
       .catch((err) => {
         console.error(err);
@@ -66,32 +65,27 @@ const AddPlan = () => {
   }
 
   // edit record
-  const getID = (plan_id, plan_name, plan_desc,payg_price,bundle_price) => {
-    setID(plan_id)
-    setPlanName(plan_name)
-    setPlanDesc(plan_desc)
-    setPAYGPrice(payg_price)
-    setBundlePrice(bundle_price)
+  const getID = (faq_id, question, answer) => {
+    setID(faq_id)
+   setquestion(question)
+   setanswer(answer)
     setIsUpdate(true)
     
   }
 
   // update record
   const updateFields = () => {
-    let fieldToEdit = doc(database, 'admin_plans', plan_id);
+    let fieldToEdit = doc(database, 'faq', faq_id);
     updateDoc(fieldToEdit, {
-      plan_name: planName,
-      plan_desc: planDesc,
-      bundle_price:bundle_price,
-      payg_price:payg_price,
+      question: question,
+      answer: answer,
+      
     })
     .then(() => {
       toast.success('Data updated successfully!')
       getData()
-      setPlanName('')
-      setPlanDesc('')
-      setBundlePrice('')
-      setPAYGPrice('')
+      setquestion('')
+   setanswer('')
       setIsUpdate(false)
     })
     .catch((err) => {
@@ -100,8 +94,8 @@ const AddPlan = () => {
   }
 
   // delete record
-  const deleteDocument = (plan_id) => {
-    let fieldToEdit = doc(database, 'admin_plans', plan_id);
+  const deleteDocument = (faq_id) => {
+    let fieldToEdit = doc(database, 'faq', faq_id);
     deleteDoc(fieldToEdit)
     .then(() => {
       toast.success('Data deleted successfully!')
@@ -118,47 +112,33 @@ const AddPlan = () => {
         <div className="row">
           <ToastContainer/>
           <div className="col-sm-12">
-            <h3>add plans:</h3>
+            <h3>add FAQ:</h3>
             <div className="row">
               <div className="col-sm-7">
                 <div className='inner-info'>
                 <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()} className='form-plans'>
                   <div className="row">
                     <div className="col-sm-12">
-                      <label>Plan Name:</label>
+                      <label>FAQ Question:</label>
                     </div>
                     <div className="col-sm-12">
-                        <input type="text" name="plan_name" id="plan_name" className='form-control' onChange={(event) => setPlanName(event.target.value)} value={planName} />
-                    </div>
+                    <textarea name="question" id="question" cols="30" rows="4" className='form-control' onChange={(event) => setquestion(event.target.value)} value={question}></textarea>
+                     </div>
                   </div>
                   <div className="row">
                     <div className="col-sm-12">
-                      <label>Plan Description:</label>
+                      <label>FAQ Answer:</label>
                     </div>
                     <div className="col-sm-12">
-                      <textarea name="plan_desc" id="plan_desc" cols="30" rows="4" className='form-control' onChange={(event) => setPlanDesc(event.target.value)} value={planDesc}></textarea>
+                      <textarea name="answer" id="answer" cols="30" rows="4" className='form-control' onChange={(event) => setanswer(event.target.value)} value={answer}></textarea>
                     </div>
                   </div>
                   
 
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <label>PAYG Price:</label>
-                    </div>
-                    <div className="col-sm-12">
-                        <input type="number" name="payg_price" id="bundle_price" className='form-control' onChange={(event) => setPAYGPrice(event.target.value)} value={payg_price} />
-                    </div>
-                  </div>
+                  
 
 
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <label>Bundle Price:</label>
-                    </div>
-                    <div className="col-sm-12">
-                        <input type="number" name="bundle_price" id="bundle_price" className='form-control' onChange={(event) => setBundlePrice(event.target.value)} value={bundle_price} />
-                    </div>
-                  </div>
+                 
 
 
 
@@ -201,8 +181,8 @@ const AddPlan = () => {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Plan Name</th>
-                        <th>Description</th>
+                        <th>Question</th>
+                        <th>Answer</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -212,16 +192,16 @@ const AddPlan = () => {
                         <>
                         <tr>
                           <td>{count++} </td>
-                          <td>{data.plan_name}</td>
-                          <td>{data.plan_desc}</td>
+                          <td>{data.question}</td>
+                          <td>{data.answer}</td>
                           <td>
 
-                              <button className='btn btn-edit'  onClick={() => getID(data.plan_id, data.plan_name, data.plan_desc, data.payg_price, data.bundle_price)}>
+                              <button className='btn btn-edit'  onClick={() => getID(data.faq_id, data.question, data.answer)}>
                                 <i className='fa fa-pencil'></i>
                               </button>
 
 
-                              <button className='btn btn-delete' onClick={() => deleteDocument(data.plan_id)}>
+                              <button className='btn btn-delete' onClick={() => deleteDocument(data.faq_id)}>
                                 <i className='fa fa-trash'></i>
                               </button>
 
@@ -245,4 +225,4 @@ const AddPlan = () => {
   )
 }
 
-export default AddPlan
+export default AddFAQ

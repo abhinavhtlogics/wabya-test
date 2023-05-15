@@ -5,7 +5,7 @@ const CoachingJourney = () => {
   return(
 
     <>
-      <section className="about-coaching">
+      <section className="about-coaching" id="this-coaching">
         <div className="container">
           <div className="row">
 
@@ -32,7 +32,7 @@ const CoachingJourney = () => {
         </div> {/* <!-- container --> */}
       </section> {/* <!--/ banner --> */}
 
-      <section className="coaching-journey">
+      <section className="coaching-journey" id="coaching-journey">
         <div className="container">
           <div className="row">
 

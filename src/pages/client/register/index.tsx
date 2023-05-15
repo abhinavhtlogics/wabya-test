@@ -93,7 +93,7 @@ const RegisterPage = () => {
 
     onSubmit: async (values, action) => {
 
-      if(await countData(values.clientEmail) == 0){
+      if(await countData(values.clientEmail.toLowerCase()) == 0){
       console.log(
         "🚀 ~ file: index.tsx ~ line 81 ~ Registration ~ values",
         values,
@@ -101,7 +101,7 @@ const RegisterPage = () => {
           addDoc(clientRef, {
             client_name: values.clientName,
             client_country : values.clientCountry,
-            client_email : values.clientEmail,
+            client_email : values.clientEmail.toLowerCase(),
             client_language : values.clientLanguage,
             client_password : values.clientPassword,
             client_phone : Number(values.clientPhone),

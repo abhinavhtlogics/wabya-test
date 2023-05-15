@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 // firebase config
 import { database, storage } from '../../../firebaseConfig'
-import { collection, doc, updateDoc, getDoc,query,where,getDocs } from 'firebase/firestore'
+import { collection, doc, updateDoc, getDoc,query,where,getDocs,addDoc } from 'firebase/firestore'
 import { useFormik } from 'formik';
 import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 

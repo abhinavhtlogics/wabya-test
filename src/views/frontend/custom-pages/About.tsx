@@ -40,7 +40,7 @@ const About = () => {
       </div>
     </section>
 
-    <section className="meet-team">
+    <section className="meet-team" id="meet-team">
         <div className="container">
           <div className="row">
             <div className="col-sm-12 top">
@@ -97,7 +97,7 @@ Nullam mattis ac ex in blandit. Aliquam ut accumsan ex.</p>
         </div>
     </section>
 
-    <section className="pvmv">
+    <section className="pvmv" id="mission">
         <div className="container">
           <div className="row">
 

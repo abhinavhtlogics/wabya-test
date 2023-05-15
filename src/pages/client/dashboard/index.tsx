@@ -1,10 +1,13 @@
 // ** Files Imports
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { app, database } from "../../../../firebaseConfig";
+import { app, database,storage } from "../../../../firebaseConfig";
+import emailjs from '@emailjs/browser';
+import { Alert } from 'antd'
+import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 import {
   collection,
   getDocs,
@@ -26,11 +29,48 @@ import { ArrowRightCircleOutline } from "mdi-material-ui";
 
 const Dashboard = () => {
   const router = useRouter();
+  const form = useRef();
+  const form2 = useRef();
   const databaseRef = collection(database, "client_user");
   const coachRef = collection(database, "coaches_user");
   const planRef = collection(database, "admin_plans");
   const meetingRef = collection(database, "meeting");
+  const helpRef = collection(database, "help");
+  const msgRef = collection(database, "message");
+  const requestRef = collection(database, "newPlanRequest");
 
+
+  const [SearchVal, setSearchVal] = useState('');
+  const [requestPlanId, setrequestPlanId] = useState('');
+  const [helpText, sethelpText] = useState('');
+  const [ShowHelpErr, setShowHelpErr] = useState(false);
+
+  const [coachText, setcoachText] = useState('');
+  const [ShowCoachErr, setShowCoachErr] = useState(false);
+  const [ShowEmailSuccess, setShowEmailSuccess] = useState(false);
+
+  const [selectOption, setSelectOption] = useState(true);
+  const [emailOption, setemailOption] = useState(false);
+  const [callOption, setcallOption] = useState(false);
+
+
+  const showEmailForm = () => {
+    setSelectOption(false);
+    setemailOption(true);
+    setcallOption(false);
+  };
+
+
+  const makePhoneCall = () => {
+    const phoneNumber = mycoach[0].coach_phone; // Replace with the phone number you want to call
+    const dialCode = 'tel:'; // This is the dial code used to indicate that a phone call should be made
+  
+    // Construct the full phone number URL by concatenating the dial code and phone number
+    const phoneUrl = dialCode + phoneNumber;
+  
+    // Use the window.open() method to open the phone number URL in a new window, which should trigger the phone app on the user's device
+    window.open(phoneUrl);
+  };
   /// For Testing
   //const [apiUrl, setapiUrl] = useState("https://api.cal.dev/");
 
@@ -103,6 +143,11 @@ const Dashboard = () => {
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isContactCoach, setisContactCoach] = useState(false);
+  const [isUploadNotes, setisUploadNotes] = useState(false);
+  const [isUpdateBilling, setisUpdateBilling] = useState(false);
+
+
   const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [reschedule, setReschedule] = useState(false);
@@ -112,8 +157,12 @@ const Dashboard = () => {
   const [eventChoose, setEventChoose] = useState(false);
   const [videoCall, setVideoCall] = useState(false);
   const [coach, setCoach] = useState(false);
+
+  const [mycoach, setMyCoach] = useState(null);
+  const [myplan, setMyPlan] = useState(null);
   const [coachesCalApiKey, setcoachesCalApiKey] = useState("");
   const [coachesFirebaseId, setcoachesFirebaseId] = useState("");
+  
   const [coachesFirebaseName, setcoachesFirebaseName] = useState("");
   const [coachesEvents, setcoachesEvents] = useState([]);
   const [coachesEventTimeInterval, setcoachesEventTimeInterval] = useState(30);
@@ -143,12 +192,30 @@ const Dashboard = () => {
   const [clientCalEmail, setclientCalEmail] = useState("");
 
   const [clientFirebaseName, setclientFirebaseName] = useState("");
+  const [clientFirebaseFirstName, setclientFirebaseFirstName] = useState("");
   const [clientFirebaseEmail, setclientFirebaseEmail] = useState("");
+  const [clientPlanId, setclientPlanId] = useState("");
 
   const [clientFirebaseId, setclientFirebaseId] = useState("");
 
   const [BookedId, setBookedId] = useState();
   const [mySession, setmysSession] = useState([]);
+
+
+  const [percent, setPercent] = useState(0);
+  const [filecount, setfilecount] = useState(0);
+  
+  const [percentage, setpercentage] = useState("%");
+  const [fileUrl, setfileUrl] = useState("");
+  const [fileName, setfileName] = useState("");
+  const [fileType, setfileType] = useState("");
+  const resourceRef = collection(database, 'resources');
+
+  const [file, setFile] = useState(null);
+  const [showpercent, setshowpercent] = useState(false);
+  const [showfile, setshowfile] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
 
   const scheduleNewSes = () => {
     setcollectionUpdateId("");
@@ -304,6 +371,124 @@ const Dashboard = () => {
 
 
 
+ // add new record
+ const sendHelpMsg = () => {
+  if(helpText == ""){
+setShowHelpErr(true);
+  }else{
+    setShowHelpErr(false);
+  addDoc(msgRef, {
+    message: helpText,
+    status:1,
+   senderId:sessionStorage.getItem("userId"),
+  })
+    .then(() => {
+      toast.success('Data sent successfully')
+      getData()
+    
+
+      emailjs.sendForm('service_48nilue', 'template_3uazkzk', form.current, 'bHrOxc3becdFqRykK')
+      .then((result) => {
+          console.log(result.text);
+          sethelpText('')
+      }, (error) => {
+          console.log(error.text);
+      });
+     
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+  }
+}
+
+
+const sendCoachMsg = () => {
+  setShowCoachErr(false);
+  setShowEmailSuccess(false);
+  if(coachText == ""){
+setShowCoachErr(true);
+  }else{
+    
+    
+
+      emailjs.sendForm('service_48nilue', 'template_l4z15n1', form2.current, 'bHrOxc3becdFqRykK')
+      .then((result) => {
+          console.log(result.text);
+          setcoachText('')
+          // handleContactCancel();
+          setShowEmailSuccess(true)
+      }, (error) => {
+          console.log(error.text);
+      });
+     
+   
+  }
+}
+function test(){
+  console.log('abc');
+}
+
+const addNewRequest = async (event :  any) =>{
+
+  if(await countMyRequest() == 0){
+    var new_plan_id=event.target.getAttribute("data-plan-id");
+ 
+    addDoc(requestRef, {
+      plan_id: clientPlanId,
+      new_plan_id:new_plan_id,
+     client_id:sessionStorage.getItem("userId"),
+    })
+      .then(() => {
+        getNewRequest();
+        toast.success('Data Updated successfully')
+      
+        
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+  }
+  else{
+    var new_plan_id=event.target.getAttribute("data-plan-id");
+    const client_id=sessionStorage.getItem("userId");
+   // const fieldToEdit = doc(collection(database, "newPlanRequest"),client_id);
+    //const fieldToEdit = query(requestRef, where('client_id', '==', client_id));
+
+    const collectionRef = collection(database, "newPlanRequest");
+    const q = query(collectionRef, where("client_id", "==", client_id));
+    const querySnapshot = await getDocs(q);
+    
+    querySnapshot.forEach((doce) => {
+      const fieldToEdit = doc(database, "newPlanRequest", doce.id);
+      updateDoc(fieldToEdit, {
+        new_plan_id: new_plan_id,
+        
+        // ...
+      });
+    });
+
+    getNewRequest();
+  }
+  
+  }
+
+
+  // coach data fetch
+  const countMyRequest = async () => {
+    console.log('test');
+    console.log(sessionStorage.getItem("userId"));
+    const collectionRef = collection(database, "newPlanRequest");
+    const queryDoc = query(collectionRef, where("client_id", "==", sessionStorage.getItem("userId")));
+  
+    const snapshot = await getDocs(queryDoc);
+    const count_data = snapshot.size;
+  
+    console.log(`Number of documents in collection: ${count_data}`);
+        console.log(count_data);
+        return count_data;
+      }
+
 
 const getSessionHistory = async () => {
 
@@ -398,12 +583,56 @@ setmysSession(session);
     setIsModalVisible(true);
   };
 
+  const showContactCoach = (event) => {
+    console.log('testtttt');
+    event.preventDefault();
+    setisContactCoach(true);
+  };
+
+  const showUploadNotes = (event) => {
+    console.log('testtttt');
+    event.preventDefault();
+    setisUploadNotes(true);
+  };
+
+  const showUpdateBilling = (event) => {
+    console.log('testtttt');
+    event.preventDefault();
+    setisUpdateBilling(true);
+  };
+
   const handleOk = () => {
     setIsModalVisible(false);
   };
   const handleCancel2 = () => {
     setIsModalVisible(false);
   };
+
+
+  const handleContactOk = () => {
+    setisContactCoach(false);
+  };
+  const handleContactCancel = () => {
+    setisContactCoach(false);
+  };
+
+  const handleUploadOk = () => {
+    setisUploadNotes(false);
+  };
+
+  const handleUploadCancel = () => {
+    setisUploadNotes(false);
+  };
+
+
+  const handleUpdateBilling = () => {
+    setisUpdateBilling(false);
+  };
+
+  const handleUpdateBillingCancel = () => {
+    setisUpdateBilling(false);
+  };
+ 
 
   const handleCancel = () => {
     setIsVideoCallVisible(false);
@@ -423,10 +652,12 @@ setmysSession(session);
 
   const [userId, setUserId] = useState();
   const [meeting, setMeeting] = useState([]);
+  const [help, setHelp] = useState(null);
 
   const [meetingByDate, setMeetingByDate] = useState([]);
 
   const [allFiles, setAllFiles] = useState([]);
+  const [allNewRequest, setallNewRequest] = useState([]);
 
   useEffect(() => {
     let userId = sessionStorage.getItem("userId");
@@ -456,6 +687,7 @@ setmysSession(session);
     getData();
     getCoachData();
     getMeeting();
+    getHelpText();
 
 
    
@@ -463,6 +695,10 @@ setmysSession(session);
     
     }
   }, [coachesCalApiKey, userId]);
+
+
+
+  
 
   // get all meeting data
   const getMeeting = async () => {
@@ -481,7 +717,88 @@ setmysSession(session);
 
 
 
+   // get all meeting data
+   const getHelpText = async () => {
+    
+    const queryDoc = query(helpRef, where("status", "==", 1));
 
+    await getDocs(queryDoc).then((response) => {
+      setHelp(
+        response.docs.map((data) => {
+          console.log(data);
+          return { ...data.data(), help_id: data.id };
+        })
+      );
+    });
+   //  console.log(coachDoc);
+    // if (coachDoc.exists()) {
+    //   setMyCoach(coachDoc.data());
+
+    //   // //console.log('here');
+    //   console.log(coachDoc.data);
+    // } else {
+    //   //console.log("No client found");
+    // }
+  };
+  const fetchCoach = async () => {
+    // const coachRef = doc(collection(database, "coaches_user"), coachesFirebaseId);
+    // const coachDoc = await getDoc(coachRef);
+
+    const queryDoc = query(coachRef, where("__name__", "==", coachesFirebaseId));
+
+    await getDocs(queryDoc).then((response) => {
+      setMyCoach(
+        response.docs.map((data) => {
+          console.log(data);
+          return { ...data.data(), coach_id: data.id };
+        })
+      );
+    });
+
+
+
+
+
+
+
+    
+   //  console.log(coachDoc);
+    // if (coachDoc.exists()) {
+    //   setMyCoach(coachDoc.data());
+
+    //   // //console.log('here');
+    //   console.log(coachDoc.data);
+    // } else {
+    //   //console.log("No client found");
+    // }
+  };
+
+
+
+  const fetchMyPlan = async () => {
+   // const myplanRef = doc(collection(database, "admin_plans"), coachesFirebaseId);
+    // const coachDoc = await getDoc(coachRef);
+
+    const queryDoc = query(planRef, where("__name__", "==", clientPlanId));
+
+    await getDocs(queryDoc).then((response) => {
+      setMyPlan(
+        response.docs.map((data) => {
+          console.log(data);
+          return { ...data.data(), plan_id: data.id };
+        })
+      );
+    });
+
+
+
+
+
+
+
+    
+   
+  };
 
 
   // get all meeting data
@@ -513,11 +830,15 @@ setmysSession(session);
       //setclientCaluserName(client.client_uname);
       setclientFirebaseId(client.id);
       setclientFirebaseName(client.client_name);
+      const firstName = client.client_name.split(' ')[0];
+      setclientFirebaseFirstName(firstName);
+console.log(firstName);
       setclientFirebaseEmail(client.client_email);
       //setcoachesCalUsername(client.assign_coach_uname);
-      
+      setclientPlanId(client.plan_id);
       setcoachesFirebaseId(client.assign_coach_id);
       getFiles();
+     // fetchCoach();
     }
 
    
@@ -529,10 +850,47 @@ setmysSession(session);
 
 
 
+  useEffect(() => {
+    if (coachesFirebaseId != '') {
+      console.log(coachesFirebaseId);
+      console.log('testtttttttt');
+      console.log(clientPlanId);
+      fetchCoach();
+      getNewRequest();
+    //  fetchMyPlan();
+
+
+    }
+
+   
+
+    //     if(!token){
+    //         router.push('/pages/login')
+    //     }
+  }, [coachesFirebaseId]);
+
+
+  useEffect(() => {
+    if (allNewRequest.length > 0) {
+      console.log('ne wplan ');
+      setrequestPlanId(allNewRequest[0].new_plan_id);
+
+
+    }
+
+   
+
+    //     if(!token){
+    //         router.push('/pages/login')
+    //     }
+  }, [allNewRequest]);
+
   const getFiles = async () => {
     const meetRef = collection(database, "resources");
-    const queryDoc = query(meetRef, where("parentId", "==", coachesFirebaseId));
-  
+   const queryDoc = query(meetRef, where("parentId", "in", [coachesFirebaseId, sessionStorage.getItem("userId")]));
+   // const queryDoc = query(meetRef, where("parentId", "==", coachesFirebaseId)
+  //  .where("parentId", "==", sessionStorage.getItem("userId"))
+
     await getDocs(queryDoc).then((response) => {
       console.log(response.docs);
       setAllFiles(
@@ -545,6 +903,42 @@ setmysSession(session);
      // setshowfile(true);
     });
   };
+
+
+
+  const getNewRequest = async () => {
+    //const meetRef = collection(database, "resources");
+   const queryDoc = query(requestRef, where("client_id", "==", sessionStorage.getItem("userId")));
+   // const queryDoc = query(meetRef, where("parentId", "==", coachesFirebaseId)
+  //  .where("parentId", "==", sessionStorage.getItem("userId"))
+
+    await getDocs(queryDoc).then((response) => {
+      console.log(response.docs);
+      setallNewRequest(
+        response.docs.map((data) => {
+          return { ...data.data(), new_request_id: data.id };
+        })
+      );
+     
+      console.log(allFiles);
+     // setshowfile(true);
+    });
+  };
+
+
+  useEffect(() => {
+    // Fetch your data from an API or elsewhere
+   
+    // Sort the data by name in ascending order
+
+    if(allFiles.length > 0){
+      const sortedData = allFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
+
+      setAllFiles(sortedData);
+    }
+    
+  }, [allFiles]);
+  
   
 
   const handleTimeClick = (event: any) => {
@@ -719,7 +1113,6 @@ setmysSession(session);
 
 
 
-
     //getBookedSchedule();
   };
 
@@ -735,8 +1128,16 @@ setmysSession(session);
 
     }
   }, [meeting]);
+  useEffect(() => {
 
+ 
 
+    if (fileUrl != "") {
+    addInFirebase();
+    }
+
+}, [fileUrl])
+  
   useEffect(() => {
    
  var starttime = "09:00:00";
@@ -764,7 +1165,13 @@ setarray1(timeslots);
   if(!client){
     return <div><img src={`${router.basePath}/images/loading.gif`} style={{ display:"block", margin:"0px auto"}} /></div>;
   }
+ 
 
+function handleFileChange(event) {
+  console.log('test');
+  setFile(event.target.files[0]);
+//handleSubmit();
+}
 
   function isReserved(time) {
     // assume reserved times are stored in an array called 'reservedTimes'
@@ -777,7 +1184,111 @@ setarray1(timeslots);
     // if the time slot is not reserved, return false
     return false;
   }
+ 
+
+  function handleSearch(event) {
+    console.log(event.target);
+   setSearchVal(event.target.value);
+//handleSubmit();
+
+  }
   
+
+  function handleSubmit() {
+    // event.preventDefault();
+ 
+ 
+     if (file != null) {
+      
+        console.log(file);
+       // Upload the file to Firebase Cloud Storage
+      // const storageRef = storage().ref();
+       //const fileRef = storageRef.child('files/' + file.name);
+       setshowpercent(true);
+       let randomString = '';
+
+          const randomNum = Math.floor(Math.random() * 1000);
+
+  // Convert the number to a string and pad it with leading zeros if necessary
+  const randomNumber = randomNum.toString().padStart(3, '0');
+  console.log(randomNumber);
+       randomString +=randomNumber;
+  
+       // Generate three random letters
+       for (let i = 0; i < 3; i++) {
+         const randomCode = Math.floor(Math.random() * (122 - 97 + 1)) + 97;
+         const randomLetter = String.fromCharCode(randomCode);
+         randomString += randomLetter;
+         console.log(randomLetter);
+       }
+
+    
+
+       const uniqueId = new Date().getTime();
+       console.log(uniqueId);
+       randomString +=uniqueId;
+
+       console.log(randomString);
+     const storageRef = ref(storage, `/resources/`+randomString+``)
+       const uploadTask =  uploadBytesResumable(storageRef, file);
+       uploadTask.on("state_changed",
+     (snapshot) => {
+     const percent = Math.round(
+     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+         );
+ // update progress
+         setPercent(percent);
+         },
+     (err) => console.log(err),
+         () => {
+     // download url
+         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+         console.log(url);
+         setfileName(file.name);
+         
+         setfileType(file.type);
+         setfileUrl(url);
+         setshowpercent(false);
+         setfilecount(filecount + 1);
+         setFile(null);
+      //   toast.success('File Uploaded!');
+     });
+     }
+     ); 
+      
+         }
+       
+     }
+    
+     function addInFirebase() {
+       
+      const today = new Date();
+const date = today.getDate();
+const month = today.getMonth() + 1; // add 1 because months are zero-indexed
+const year = today.getFullYear();
+      addDoc(resourceRef, {
+          resourceURL: fileUrl,
+          parentId : sessionStorage.getItem("userId"),
+          fileName : fileName,
+          fileType : fileType,
+          uploadDate : ''+date+'-'+month+'-'+year,
+         
+        })
+          .then(() => {
+           // toast.success('File Uploaded')
+            //router.push('/client/login')
+            setErrorMessage("File Uploaded");
+            getFiles();
+          
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+         
+       }
+
+
+      
   return (
     <section className="client-dashboard">
       <div className="container">
@@ -802,7 +1313,7 @@ setarray1(timeslots);
             <div className="banner-text">
               <h2>
                 <span>we are because you are</span>welcome{" "}
-                {client ? <> {client.client_name} </> : null}
+                {client ? <> {clientFirebaseFirstName} </> : null}
               </h2>
             </div>
           </div>
@@ -882,6 +1393,272 @@ setarray1(timeslots);
           </div>
         </Modal>
         {/* modal - view session history ends */}
+
+
+
+
+
+        <Modal
+          centered
+          className="session-history-modal"
+          visible={isContactCoach}
+          onOk={handleContactOk}
+          onCancel={handleContactCancel}
+          width={800}
+        >
+          <div className="modal-data">
+            <div className="modall">
+              <div className="history-modal">
+
+
+           
+
+                {/* <i className="fa fa-angle-left"></i> */}
+                
+              </div>
+         { selectOption ?
+         <>
+            <div className="row">
+                <div className="col-md-4">.</div>
+                <div className="col-md-8"><h2>Select Option</h2></div>
+         
+         </div>
+              <div className="row">
+                <div className="col-md-3">.</div>
+                <div className="col-md-6 cal-time"><button onClick={showEmailForm} className="btn btn-time">Send Email to Coach</button></div>
+                </div>
+
+                <div className="row">
+                <div className="col-md-3">.</div>
+                <div className="col-md-6 cal-time"><button className="btn btn-time" onClick={makePhoneCall}>Call to Coach</button></div>
+                  </div>
+</>
+                  : null}
+
+{ emailOption ?
+         <>
+         <div className="row">
+                <div className="col-md-4">.</div>
+                <div className="col-md-8"><h2>Send Email</h2></div>
+         
+         </div>
+              <div className="row">
+                <div className="col-md-2">.</div>
+                <div className="col-md-8" style={{'marginBottom':'10px','fontSize':'18px', 'display':'none'}}>Coach Email - {mycoach ? mycoach[0].coach_email : null }</div></div>
+
+              <div className="row">
+                <div className="col-md-2">.</div>
+          <div className="col-md-8">
+                <form
+                  noValidate
+                  autoComplete="off"
+                  onSubmit={(e) => e.preventDefault()}
+                  ref={form2}
+                >
+                  <div className="form-group">
+                    <textarea
+                      name="coachText"
+                      id=""
+                      cols="30"
+                      rows="10"
+                      className="form-control"
+                      placeholder="message"
+                      onChange={(event) => setcoachText(event.target.value)} value={coachText}
+                    ></textarea> 
+                     <input type="hidden" name="message" value={helpText}/>
+                    <input type="hidden" name="name" value={client.client_name}/>
+                    <input type="hidden" name="email" value={mycoach ? mycoach[0].coach_email : null }/>
+                  </div>
+                  {ShowCoachErr ?  <b>Message Can't be Empty </b> : null }
+                  {ShowEmailSuccess ?  <b style={{'color':'green'}}>Email Send </b> : null }
+                  <div className="two-button">
+                    <button className="btn btn-send btn-primary" style={{'marginTop':'20px'}} onClick={sendCoachMsg}>send</button>
+                   
+                  </div>
+                 
+                </form>
+                </div>
+                
+              </div>
+              </> :null }
+            </div>
+          </div>
+        </Modal>
+
+
+
+
+
+        <Modal
+          centered
+          className="session-history-modal"
+          visible={isUpdateBilling}
+          onOk={handleUpdateBilling}
+          onCancel={handleUpdateBillingCancel}
+          width={800} 
+         
+        >
+         
+
+             
+         <div className="row">
+                <div className="col-md-4">.</div>
+                <div className="col-md-8"><h2>Update Billing</h2></div>
+         
+         </div>
+              <div className="row">
+                <div className="col-md-2">.</div>
+                <div className="col-md-8" style={{'marginBottom':'10px','fontSize':'18px', 'display':'none'}}>Coach Email - {mycoach ? mycoach[0].coach_email : null }</div></div>
+
+              <div className="row">
+                <div className="col-md-2">.</div>
+          <div className="col-md-8">
+                <form
+                  noValidate
+                  autoComplete="off"
+                  onSubmit={(e) => e.preventDefault()}
+                  ref={form2}
+                >
+                  <div className="form-group">
+                   <label>Bank Name</label>
+                    <input type="text" className="form-control" name="message"  onChange={(event) => setcoachText(event.target.value)} value={helpText}/>
+                     <input type="hidden" name="message" value={helpText}/>
+                    <input type="hidden" name="name" value={client.client_name}/>
+                    <input type="hidden" name="email" value={mycoach ? mycoach[0].coach_email : null }/>
+                  </div>
+                  {ShowCoachErr ?  <b>Message Can't be Empty </b> : null }
+                  {ShowEmailSuccess ?  <b style={{'color':'green'}}>Email Send </b> : null }
+
+
+
+                  <div className="form-group">
+                   <label>Account Number</label>
+                    <input type="text" className="form-control" name="message"  onChange={(event) => setcoachText(event.target.value)} value={helpText}/>
+                       </div>
+                  {ShowCoachErr ?  <b>Message Can't be Empty </b> : null }
+                  {ShowEmailSuccess ?  <b style={{'color':'green'}}>Email Send </b> : null }
+
+
+
+                  <div className="form-group">
+                   <label>Account Holder Name</label>
+                    <input type="text" className="form-control" name="message"  onChange={(event) => setcoachText(event.target.value)} value={helpText}/>
+                       </div>
+                  {ShowCoachErr ?  <b>Message Can't be Empty </b> : null }
+                  {ShowEmailSuccess ?  <b style={{'color':'green'}}>Email Send </b> : null }
+
+
+
+
+                  <div className="two-button">
+                    <button className="btn btn-send btn-primary" style={{'marginTop':'20px'}} onClick={sendCoachMsg}>send</button>
+                   
+                  </div>
+                 
+                </form>
+                </div>
+                
+              </div>
+             
+        </Modal>
+
+
+
+
+
+
+
+        <Modal
+          centered
+          className="session-history-modal"
+          visible={isUploadNotes}
+          onOk={handleUploadOk}
+          onCancel={handleUploadCancel}
+          width={800} 
+         
+        >
+          <div className="modal-data">
+            <div className="modall">
+              <div className="history-modal">
+
+              <div className="col-sm-12">
+          <section className="client-password">
+          <div className="row">
+                    
+                  <div className="col-sm-4"></div>
+                    <div className="col-sm-6">
+                    <h2>Upload Notes</h2>
+                      </div>   
+                    </div>
+
+                {/* <i className="fa fa-angle-left"></i> */}
+                <form noValidate autoComplete='off' style={{'marginTop':'5%'}} onSubmit={e => e.preventDefault()} className='form-password'>
+                
+                  <div className="row">
+                    
+                  <div className="col-sm-2"></div>
+                    <div className="col-sm-6">
+                    
+                    {/* <label  className="custom-file-upload">
+    <i className="fa fa-cloud-upload"></i> choose File
+    <input id="file-upload" type="file" onChange={handleFileChange}/>
+</label> */}
+<input  type="file" onChange={handleFileChange} className='btn btn-primary' style={{width:'100%'}}/>
+
+
+
+
+                       
+                    </div>
+                  
+
+                    <div className="col-sm-2">
+
+                      <input type="submit" value="SAVE" className='btn btn-save btn-primary' onClick={handleSubmit} />
+                    
+                     
+                     </div>
+
+                     <div className="col-sm-2">
+
+                    
+                      { showpercent ?
+    percent  : null}
+    { showpercent ?
+    "%"  : null}
+                     </div>
+</div>
+
+{/* <div className="row">
+                    
+                    <div className="col-sm-2"></div>
+                    <div className="col-sm-4">
+                    <input type="submit" value="SAVE" className='btn btn-primary' onClick={handleSubmit} />
+                   
+                    </div>
+</div> */}
+
+
+                    
+                 
+                 
+                  <div className="row">
+                  <div className="col-sm-12">
+                      {errorMessage && <Alert message={errorMessage} className='mt-4' type="success"/> }
+                    </div>
+
+                  </div>
+                </form>
+                
+</section>              </div>  
+              </div>
+       
+            </div>
+          </div>
+        </Modal>
+
+
+
 
         {/* video join call - modal starts */}
         <Modal
@@ -1225,7 +2002,7 @@ setarray1(timeslots);
                 <table className="table table-coach">
                   <tbody>
                     <tr>
-                      <td>
+                      <td colSpan={2}>
                         <button
                           className="btn btn-book my-4"
                           onClick={scheduleNewSes}
@@ -1233,7 +2010,7 @@ setarray1(timeslots);
                           Book a new session
                         </button>
                       </td>
-                      <td></td>
+                     
                       <td>
                         {/* <button className='btn btn-coach' onClick={videoSession}>
 
@@ -1243,45 +2020,47 @@ setarray1(timeslots);
                       <td></td>
                     </tr>
                     <tr>
-                      {/* <td>
-                        <p>Coach Name</p>
-                      </td> */}
-                      <td></td>
+                       {/* <td>
+                        <p> </p>
+                      </td>  */}
+                      <td>{mycoach ? mycoach[0].coach_name : null }</td>
                       <td></td>
                       <td>
-                        <Link href="#" passHref>
-                          <a className="btn btn-coach"> contact coach</a>
+                        <Link href="#" onClick={showContactCoach}>
+                          <a className="btn btn-coach" onClick={showContactCoach}> contact coach</a>
                         </Link>
                       </td>
                     </tr>
 
                     {meeting.map((data) => {
 
+var myArr2=data.meetingTime.split(':');
 
-
-
+var myArr=new Date(data.meetingDate).toLocaleDateString().split('/');
 
 
 
             if (new Date(data.meetingDate).toLocaleDateString() == new Date().toLocaleDateString() )
-                      return (
+            
+            return (
                         <>
                           <tr className="table-pad">
                             {/* <td>{data.coach_name}</td> */}
                             <td>
                               {new Date(data.meetingDate).toLocaleDateString()}
-
+                            
                               
                             </td>
                             <td>
-                              <Link
+                              {/* <Link
                                 passHref
                                 href={`videocall/${data.meetingName}`}
                                 target="_blank"
                                
                               >
                                 <a className="btn btn-coach">Join Video</a>
-                              </Link>
+                              </Link> */}
+                                {myArr2[0]}H{myArr2[1]}
                             </td>
                             <td>
                               <button
@@ -1308,24 +2087,29 @@ setarray1(timeslots);
 
 
                       if (new Date(data.meetingDate).getTime() > new Date().getTime() )
+                     
+                     
                       return (
+                        
                         <>
                           <tr className="table-pad">
                             {/* <td>{data.coach_name}</td> */}
-                            <td>
-                              {new Date(data.meetingDate).toLocaleDateString()}
-
+                            <td className="meetdate">
+                              {/* {new Date(data.meetingDate).toLocaleDateString()} */}
+                          {myArr[2]}/{myArr[1]}/{myArr[0]}
+                        
                               
                             </td>
                             <td>
-                              <Link
+                              {/* <Link
                                 passHref
                                 href="#"
                                 
                                
                               >
                                 <a className="btn">Join Video</a>
-                              </Link>
+                              </Link> */}
+                                {myArr2[0]}H{myArr2[1]}
                             </td>
                             <td>
                            
@@ -1557,7 +2341,7 @@ setarray1(timeslots);
                       <div className={data.slug}>
                         <div className="row">
                           <div className="col-sm-6">
-                            <div className="tooltip">
+                            <div className={`tooltip ${data.plan_id === clientPlanId ? 'planactive' : ''}`}>
                               <button className={`btn btn-${data.slug}`}>
                                 {" "}
                                 {data.plan_name}{" "}
@@ -1566,16 +2350,27 @@ setarray1(timeslots);
                                 <p>{data.plan_desc}</p>
                                 <button className="btn buy-req btnn">
                                   {" "}
-                                  request
+                                  {data.plan_id === clientPlanId ? 'Buy Again' : 'Request'}
                                 </button>
                               </div>
                             </div>
                           </div>
                           <div className="col-sm-6">
-                            <button className="btn btnn buy-pro">
+
+         { data.plan_id == requestPlanId ?
+
+                            <button  data-plan-id={data.plan_id} className="btn btnn buy-pro buyagain-btn" onClick={addNewRequest}>
                               {" "}
-                              request
+                             Requested
                             </button>
+
+
+                :
+                <button  data-plan-id={data.plan_id} className={`btn btnn buy-pro  ${data.plan_id === clientPlanId ? 'buyagain-btn' : ''}`} onClick={addNewRequest}>
+                {" "}
+                {data.plan_id === clientPlanId ? 'Buy Again' : 'Request'}
+              </button>
+                }
                           </div>
                         </div>
                       </div>
@@ -1583,8 +2378,8 @@ setarray1(timeslots);
                   );
                 })}
                 <div className="update">
-                  <Link href="#" passHref>
-                    <a className="update-billing">
+                  <Link href="#" passHref onClick={showUpdateBilling}>
+                    <a className="update-billing" onClick={showUpdateBilling}>
                       Update my billing information
                     </a>
                   </Link>
@@ -1602,8 +2397,8 @@ setarray1(timeslots);
         <div className="client-notes">
           <div className="row">
             <div className="col-sm-7">
-              <h3>my notes</h3>
-              <div className="divider-bottom"></div>
+              <h3>my notes. <span className="upload_notes_client" onClick={showUploadNotes}>Upload Notes</span></h3>
+              <div className="divider-bottom"> </div>
             </div>
           </div>
           <div className="client-bg">
@@ -1618,6 +2413,7 @@ setarray1(timeslots);
                         id="keyword"
                         className="form-control"
                         placeholder="search"
+                        onKeyUp={handleSearch}
                       />
                       <input className="btn btn-search" type="submit" />
                       <i
@@ -1629,9 +2425,10 @@ setarray1(timeslots);
                   </div>
                 </div>
 
-                {allFiles.map((myfile, index) => {
+                {allFiles.length> 0 ? allFiles.map((myfile, index) => {
              return (
-            
+              myfile.fileName.toLowerCase().indexOf(SearchVal.toLowerCase()) !== -1
+              ? 
           <div className="col-sm-4 fi-coll">
               <a href={myfile.resourceURL} target='_blank'>
             <div className="inner">
@@ -1653,12 +2450,13 @@ setarray1(timeslots);
                     </div>
               </div></a>
             </div>
+            :null
 
              );
-          })
+          }): <div className="col-sm-12 fi-coll" style={{'text-align':'center'}}>No File Found </div>
         }
          
-
+ 
                
                
             
@@ -1673,17 +2471,17 @@ setarray1(timeslots);
               <div className="coach-resp">
                 <h5>a coach's responsibility is to :</h5>
                 <ul>
-                  <li>Create a safe and thought-provoking space;</li>
-                  <li>Explore and clarify what you want to achieve;</li>
-                  <li>Draw out your solutions and strategies;</li>
-                  <li>Promote accountability for the process and results;</li>
-                  <li>Encourage self-discovery throught.</li>
+                  <li>Create a safe and thought-provoking space</li>
+                  <li>Explore and clarify what you want to achieve</li>
+                  <li>Draw out your solutions and strategies</li>
+                  <li>Promote accountability for the process and results</li>
+                  <li>Encourage self-discovery throught</li>
                 </ul>
                 <h5>a client's responsibility is to :</h5>
                 <ul>
-                  <li>Show up with a curious &amp; open mind;</li>
-                  <li>Embrace self-discovery;</li>
-                  <li>Take inspired action;</li>
+                  <li>Show up with a curious &amp; open mind</li>
+                  <li>Embrace self-discovery</li>
+                  <li>Take inspired action</li>
                   <li>
                     Hold yourself accountable for the process and results.
                   </li>
@@ -1694,27 +2492,30 @@ setarray1(timeslots);
               <div className="client-help">
                 <h3>how can we help you?</h3>
                 <p>
-                  Is there anything we can do to help you improve your wabya
-                  journey? <br />
-                  Send us a message with any comments or feedback
+                  {help ? help[0].helpText : null }
                 </p>
                 <form
                   noValidate
                   autoComplete="off"
                   onSubmit={(e) => e.preventDefault()}
+                  ref={form}
                 >
                   <div className="form-group">
                     <textarea
-                      name=""
+                      name="helpText"
                       id=""
                       cols="30"
                       rows="4"
                       className="form-control"
                       placeholder="message"
-                    ></textarea>
+                      onChange={(event) => sethelpText(event.target.value)} value={helpText}
+                    ></textarea> 
+                     <input type="hidden" name="message" value={helpText}/>
+                    <input type="hidden" name="name" value={client.client_name}/>
                   </div>
+                  {ShowHelpErr ?  <b>Message Can't be Empty </b> : null }
                   <div className="two-button">
-                    <button className="btn btn-send">send</button>
+                    <button className="btn btn-send" onClick={sendHelpMsg}>send</button>
                     <button className="btn btn-chat">
                       <i className="fa fa-whatsapp"></i> chat now
                     </button>

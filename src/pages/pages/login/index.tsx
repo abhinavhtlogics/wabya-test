@@ -121,7 +121,7 @@ const LoginPage = () => {
           {error && <Alert severity='error' style={{ margin :'0 0 20px 0'}}>{error}</Alert>}
 
           <form noValidate autoComplete='off' onSubmit={handleLogin} >
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }}  type='email'  onChange={(event) => setEmail(event.target.value)} value={email} />
+            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }}  type='email'  onChange={(event) => setEmail(event.target.value.toLowerCase())} value={email} />
             <TextField autoFocus  fullWidth id='password' label='Password' sx={{ marginBottom: 4 }}  type={visible ? 'text' : 'password'}  onChange={(event) => setPassword(event.target.value)} value={password} className='text-pass' />
             <span className="pass-eye" onClick={()=>setVisible(!visible)}>
             {

@@ -7,12 +7,19 @@ import { useState, useEffect } from 'react'
 import {database} from '../../../firebaseConfig'
 import { collection, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { Alert } from 'antd'
+// material ui icons
+import EyeOutline from 'mdi-material-ui/EyeOutline'
+import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
+
 
 const EditCoachPassword = () => {
 
   const router = useRouter();
-
+  const [visible, setVisible] = useState<boolean>(false);
+  const [visible2, setVisible2] = useState<boolean>(false);
+  const [visible3, setVisible3] = useState<boolean>(false);
   const handleClick = (e) => {
+    
 
     const inputEl1 = document.querySelector('#current_pass');
     const dummyEl1 = document.querySelector('#dummy1');
@@ -25,6 +32,7 @@ const EditCoachPassword = () => {
     const inputEl3 = document.querySelector('#confirm_pass');
     const dummyEl3 = document.querySelector('#dummy3');
     const resultEl3 = document.querySelector('#result3');
+    
 
       inputEl1.addEventListener('keyup', () => {
       const dummyText1 = Array(inputEl1.value.length).fill('*').join('');
@@ -52,6 +60,8 @@ const EditCoachPassword = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [coachId, setCoachId] = useState('');
   const [new_pass_type, set_new_pass_type] = useState(false);
+
+  
   
 
   useEffect(() => {
@@ -120,39 +130,70 @@ const EditCoachPassword = () => {
                     <div className="col-sm-6">
                       <label>current password:</label>
                     </div>
-                    <div className="col-sm-6">
-                        <input type="password" name="current_pass" id="current_pass" className='form-control' onClick={(e) => handleClick(e)} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} /> <span id="dummy1" onClick={(e) => handleClick(e)}></span>
+                    <div className="col-sm-5">
+                        <input type={visible ? 'text' : 'password'} style={visible ? { color: 'black' } : {}} name="current_pass" id="current_pass" className='form-control' onClick={(e) => handleClick(e)} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} /> <span id="dummy1" onClick={(e) => handleClick(e)} style={visible ? { display: 'none' } : {}}></span>
                         <span id="result1">Result is : </span>
+                        
                     </div>
+                    <div className="col-sm-1">
 
-                 
+<span className="pass-eye" style={{ right: '10%' }} onClick={()=>setVisible(!visible)}>
+{
+visible ?
+<EyeOutline fontSize='small' /> :
+<EyeOffOutline fontSize='small' />
+}
+</span>
+</div>
                   </div>
                   <div className="row">
                     <div className="col-sm-6">
                       <label>new password:</label>
                     </div>
-                    <div className="col-sm-6">
-                        <input type="password" name="new_pass" id="new_pass" className='form-control' onClick={(e) => handleClick(e)} value={newPassword} onChange={e => setNewPassword(e.target.value)} /> <span id="dummy2" onClick={(e) => handleClick(e)}></span>
-                       
+                    <div className="col-sm-5">
+                        <input type={visible2 ? 'text' : 'password'} style={visible2 ? { color: 'black' } : {}} name="new_pass" id="new_pass" className='form-control' onClick={(e) => handleClick(e)} value={newPassword} onChange={e => setNewPassword(e.target.value)} /> <span id="dummy2" onClick={(e) => handleClick(e)} style={visible2 ? { display: 'none' } : {}}></span>
                         <span id="result2">Result is : </span>
+                    </div>
+                    <div className="col-sm-1">
 
-                              </div>
-
-                                    
+<span className="pass-eye" style={{ right: '10%' }} onClick={()=>setVisible2(!visible2)}>
+{
+visible2 ?
+<EyeOutline fontSize='small' /> :
+<EyeOffOutline fontSize='small' />
+}
+</span>
+</div>
                   </div>
                   <div className="row">
                     <div className="col-sm-6">
                       <label>confirm new password:</label>
-                    </div>
-                    <div className="col-sm-6">
-                        <input type="password" name="confirm_pass" id="confirm_pass" className='form-control' onClick={(e) => handleClick(e)} value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} /> <span id="dummy3" onClick={(e) => handleClick(e)}></span>
+                    </div> 
+                    
+                    <div className="col-sm-5">
+                    
+                        <input type={visible3 ? 'text' : 'password'} name="confirm_pass" id="confirm_pass"  style={visible3 ? { color: 'black' } : {}}
+className='form-control' onClick={(e) => handleClick(e)} value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} /> 
+                      
+                        <span id="dummy3" onClick={(e) => handleClick(e)} style={visible3 ? { display: 'none' } : {}}></span> 
+                      
                         <span id="result3">Result is : </span>
+                        
                     </div>
-                   
+                    <div className="col-sm-1">
+
+                    <span className="pass-eye" style={{ right: '10%' }} onClick={()=>setVisible3(!visible3)}>
+            {
+              visible3 ?
+              <EyeOutline fontSize='small' /> :
+              <EyeOffOutline fontSize='small' />
+            }
+            </span>
+                    </div>
                   </div>
                   <div className="row">
                     <div className="col-sm-12">
-                      <input type="submit" value="Save" className='btn btn-save' onClick={handleChangePassword} />
+                      <input type="submit" value="save" className='btn btn-save' onClick={handleChangePassword} />
                     </div>
                     <div className="col-sm-12">
                       {errorMessage && <Alert message={errorMessage} className='mt-4' type="success"/> }

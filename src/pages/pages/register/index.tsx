@@ -99,7 +99,7 @@ const coachesRef = collection(database, 'coaches_user');
           addDoc(coachesRef, {
             coach_name: values.username,
             coach_country : values.country,
-            coach_email : values.email,
+            coach_email : values.email.toLowerCase(),
             coach_password : values.password,
             coach_phone : Number(values.phone),
             coach_timezone : values.timezone,

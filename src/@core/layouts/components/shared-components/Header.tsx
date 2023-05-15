@@ -53,7 +53,7 @@ const Header = () => {
     {
       router.pathname === '/client/dashboard' || router.pathname === '/client/change-password' ?
       (
-        <header className='admin-header client-header'>
+        <header className='admin-header client-header custom-class'>
           <div className='menu-head'>
             <div className='container'>
               <nav className='navbar navbar-expand-lg'>

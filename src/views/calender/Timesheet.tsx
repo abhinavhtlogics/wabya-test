@@ -54,7 +54,7 @@ const Timesheet = () => {
                         <td>
                           <div className='first'>
                             <p>
-                              2 <span>hour</span>
+                              2 <span>hours</span>
                             </p>
                             <p>
                               $ <span>000.00</span>
@@ -80,7 +80,7 @@ const Timesheet = () => {
                           </div>
                           <div className='second'>
                             <p>
-                              2 <span>hour</span>
+                              2 <span>hours</span>
                             </p>
                             <p>
                               $ <span>000.00</span>
@@ -98,7 +98,7 @@ const Timesheet = () => {
                           </div>
                           <div className='first'>
                             <p>
-                              2 <span>hour</span>
+                              2 <span>hours</span>
                             </p>
                             <p>
                               $ <span>000.00</span>
@@ -106,7 +106,7 @@ const Timesheet = () => {
                           </div>
                           <div className='second'>
                             <p>
-                              2 <span>hour</span>
+                              2 <span>hours</span>
                             </p>
                             <p>
                               $ <span>000.00</span>
@@ -115,7 +115,7 @@ const Timesheet = () => {
                         </td>
                         <td>
                         <div className="first">
-                            <p>3  <span>hour</span></p>
+                            <p>3  <span>hours</span></p>
                             <p>$ <span>000.00</span></p>
                           </div>
                         </td>
@@ -212,7 +212,7 @@ const Timesheet = () => {
                           <td>2 hours</td>
                           <td>2 hours</td>
                           <td>2 hours</td>
-                          <td>1 hours</td>
+                          <td>1 hour</td>
                           <td>9 hours</td>
                         </tr>
                         <tr>
@@ -221,7 +221,7 @@ const Timesheet = () => {
                           <td>2 hours</td>
                           <td>2 hours</td>
                           <td>2 hours</td>
-                          <td>1 hours</td>
+                          <td>1 hour</td>
                           <td>9 hours</td>
                         </tr>
                         <tr>
@@ -230,7 +230,7 @@ const Timesheet = () => {
                           <td>2 hours</td>
                           <td>2 hours</td>
                           <td>2 hours</td>
-                          <td>1 hours</td>
+                          <td>1 hour</td>
                           <td>9 hours</td>
                         </tr>
                         <tr>
@@ -239,7 +239,7 @@ const Timesheet = () => {
                           <td>2 hours</td>
                           <td>2 hours</td>
                           <td>2 hours</td>
-                          <td>1 hours</td>
+                          <td>1 hour</td>
                           <td>9 hours</td>
                         </tr>
                         <tr>
